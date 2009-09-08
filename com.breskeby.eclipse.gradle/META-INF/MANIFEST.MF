@@ -7,6 +7,10 @@ Bundle-Activator: com.breskeby.eclipse.gradle.Activator
 Bundle-Vendor: rene@breskeby.com
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ org.codehaus.groovy.eclipse.ui;bundle-version="2.0.0",
+ org.eclipse.jface.text;bundle-version="3.5.0",
+ org.eclipse.ui.editors;bundle-version="3.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.jdt.core
