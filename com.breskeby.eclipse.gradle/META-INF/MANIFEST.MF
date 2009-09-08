@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Gradle Eclipse Plugin
+Bundle-SymbolicName: com.breskeby.eclipse.gradle; singleton:=true
+Bundle-Version: 0.1.0
+Bundle-Activator: com.breskeby.eclipse.gradle.Activator
+Bundle-Vendor: rene@breskeby.com
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
