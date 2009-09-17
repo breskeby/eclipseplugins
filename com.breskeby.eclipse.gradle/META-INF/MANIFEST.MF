@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Gradle Eclipse Plugin
 Bundle-SymbolicName: com.breskeby.eclipse.gradle; singleton:=true
 Bundle-Version: 0.1.0
-Bundle-Activator: com.breskeby.eclipse.gradle.Activator
+Bundle-Activator: com.breskeby.eclipse.gradle.GradlePlugin
 Bundle-Vendor: rene@breskeby.com
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -13,4 +13,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors;bundle-version="3.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.jdt.core
+Import-Package: com.ibm.icu.text;version="4.0.1",
+ org.eclipse.jdt.core

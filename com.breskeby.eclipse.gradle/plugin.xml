@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
+	<extension
+         id="gradleRunner"
+         point="org.eclipse.core.runtime.applications">
+     <application>
+         <run
+               class="com.breskeby.eclipse.gradle.GradleRunner">
+         </run>
+      </application>
+   </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -24,7 +32,139 @@
          </action>
       </objectContribution>
    </extension>
-   
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="%PreferencePage.gradlePreferences"
+            class="org.eclipse.ant.internal.ui.preferences.AntPreferencePage"
+            id="org.eclipse.ant.ui.AntPreferencePage">
+            <keywordReference id="org.eclipse.ant.ui.general"/>
+      </page>
+      <page
+            name="%PreferencePage.antRuntimePreferences"
+            category="org.eclipse.ant.ui.AntPreferencePage"
+            class="org.eclipse.ant.internal.ui.preferences.AntRuntimePreferencePage"
+            id="org.eclipse.ant.ui.AntRuntimePreferencePage">
+            <keywordReference id="org.eclipse.ant.ui.runtime"/>
+      </page>
+      <page
+            name="%PreferencePage.antEditorPreferences"
+            category="org.eclipse.ant.ui.AntPreferencePage"
+            class="org.eclipse.ant.internal.ui.preferences.AntEditorPreferencePage"
+            id="org.eclipse.ant.ui.AntEditorPreferencePage">
+            <keywordReference id="org.eclipse.ant.ui.editor"/>
+      </page>
+      <page
+            name="%PreferencePage.antCodeFormatterPreferences"
+            category="org.eclipse.ant.ui.AntEditorPreferencePage"
+            class="org.eclipse.ant.internal.ui.preferences.AntCodeFormatterPreferencePage"
+            id="org.eclipse.ant.ui.AntCodeFormatterPreferencePage">
+            <keywordReference id="org.eclipse.ant.ui.formatter"/>
+      </page>
+       <page
+            name="%PreferencePage.antCodeAssistPreferences"
+            category="org.eclipse.ant.ui.AntEditorPreferencePage"
+            class="org.eclipse.ant.internal.ui.preferences.AntCodeAssistPreferencePage"
+            id="org.eclipse.ant.ui.AntCodeAssistPreferencePage">
+            <keywordReference id="org.eclipse.ant.ui.codeAssist"/>
+      </page>
+      <page
+            name="%PreferencePage.antTemplatePreferences"
+            category="org.eclipse.ant.ui.AntEditorPreferencePage"
+            class="org.eclipse.ant.internal.ui.editor.templates.AntTemplatePreferencePage"
+            id="org.eclipse.ant.ui.TemplatesPreferencePage">
+            <keywordReference id="org.eclipse.ant.ui.template"/>
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            category="org.eclipse.ui.externaltools"
+            delegate="org.eclipse.ant.internal.ui.launchConfigurations.AntLaunchDelegate"
+            delegateDescription="%GradleLaunchDelegate.description"
+            delegateName="%GradleLaunchDelegate.name"
+            id="org.eclipse.ant.AntLaunchConfigurationType"
+            migrationDelegate="org.eclipse.ant.internal.ui.launchConfigurations.AntMigrationDelegate"
+            modes="run, debug"
+            name="%GradleBuild"
+            sourceLocatorId="org.eclipse.ant.ui.debug.sourceLookupDirector"
+            sourcePathComputerId="org.eclipse.ant.ui.debug.sourcePathComputer">
+      </launchConfigurationType>
+      <launchConfigurationType
+            category="org.eclipse.ui.externaltools.builder"
+            delegate="org.eclipse.ant.internal.ui.launchConfigurations.AntLaunchDelegate"
+            delegateDescription="%GradleBuilderLaunchDelegate.description"
+            delegateName="%GradleBuilderLaunchDelegate.name"
+            id="org.eclipse.ant.AntBuilderLaunchConfigurationType"
+            modes="run"
+            name="%GradleBuilder.name">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            category="org.eclipse.ui.externaltools"
+            class="org.eclipse.ant.internal.ui.launchConfigurations.AntLaunchShortcut"
+            description="%GradleBuildShortcut.description"
+            helpContextId="org.eclipse.ui.externaltools.launchShortcutHelpContext.antShortcut"
+            icon="$nl$/icons/full/obj16/ant.gif"
+            id="org.eclipse.ant.ui.gradleShortcut"
+            label="%GradleLaunchShortcut.label"
+            modes="run, debug">
+        <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesContentType" value="com.breskeby.eclipse.gradle.contenttype.buildfile"/>
+                 </or>
+               </iterate>
+             </with>
+           </enablement>
+           <contextLabel
+         	  mode="run"
+         	  label="%GradleLaunchShortcut.label"/>
+         <contextLabel
+         	  mode="debug"
+         	  label="%GradleLaunchShortcut.label"/>
+  		 </contextualLaunch>
+        <configurationType
+              id="org.eclipse.ant.GradleLaunchConfigurationType">
+        </configurationType>
+      </shortcut>
+      <shortcut
+            category="org.eclipse.ui.externaltools"
+            class="org.eclipse.ant.internal.ui.launchConfigurations.GradleLaunchShortcutWithDialog"
+            description="%GradleBuild...Shortcut.description"
+            helpContextId="org.eclipse.ui.externaltools.launchShortcutHelpContext.antShortcutWithDialog"
+            icon="$nl$/icons/full/obj16/ant.gif"
+            id="org.eclipse.ant.ui.antShortcutWithDialog"
+            label="%GradleLaunchShortcutWithDialog.label"
+            modes="run, debug">
+        <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesContentType" value="com.breskeby.eclipse.gradle.contenttype.buildfile"/>
+                 </or>
+               </iterate>
+             </with>
+           </enablement>
+           <contextLabel
+         	  mode="run"
+         	  label="%GradleLaunchShortcutWithDialog.label"/>
+          <contextLabel
+         	  mode="debug"
+         	  label="%GradleLaunchShortcutWithDialog.label"/>
+  		 </contextualLaunch>
+        <configurationType
+              id="org.eclipse.ant.AntLaunchConfigurationType">
+        </configurationType>
+      </shortcut>
+   </extension>
    <extension point="org.eclipse.core.contenttype.contentTypes">
    		<content-type base-type="org.eclipse.core.runtime.xml"
 			file-names="build.gradle"
