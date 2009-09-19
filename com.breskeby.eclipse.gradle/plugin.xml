@@ -32,48 +32,46 @@
          </action>
       </objectContribution>
    </extension>
+   
+    <extension point="org.eclipse.core.runtime.preferences">
+		<initializer class="com.breskeby.eclipse.gradle.preferences.GradlePreferenceInitializer"/>
+	</extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
             name="%PreferencePage.gradlePreferences"
-            class="org.eclipse.ant.internal.ui.preferences.AntPreferencePage"
-            id="org.eclipse.ant.ui.AntPreferencePage">
-            <keywordReference id="org.eclipse.ant.ui.general"/>
+            class="com.breskeby.eclipse.gradle.preferences.GradlePreferencePage"
+            id="com.breskeby.eclipse.gradle.preferences.GradlePreferencePage">
       </page>
       <page
-            name="%PreferencePage.antRuntimePreferences"
-            category="org.eclipse.ant.ui.AntPreferencePage"
-            class="org.eclipse.ant.internal.ui.preferences.AntRuntimePreferencePage"
-            id="org.eclipse.ant.ui.AntRuntimePreferencePage">
-            <keywordReference id="org.eclipse.ant.ui.runtime"/>
+            name="%PreferencePage.gradleRuntimePreferences"
+            category="com.breskeby.eclipse.gradle.preferences.GradlePreferencePage"
+            class="com.breskeby.eclipse.gradle.preferences.GradleRuntimePreferencePage"
+            id="com.breskeby.eclipse.gradle.preferences.GradleRuntimePreferencePage">
       </page>
       <page
-            name="%PreferencePage.antEditorPreferences"
-            category="org.eclipse.ant.ui.AntPreferencePage"
+            name="%PreferencePage.gradleEditorPreferences"
+            category="com.breskeby.eclipse.gradle.preferences.GradlePreferencePage"
             class="org.eclipse.ant.internal.ui.preferences.AntEditorPreferencePage"
-            id="org.eclipse.ant.ui.AntEditorPreferencePage">
-            <keywordReference id="org.eclipse.ant.ui.editor"/>
+            id="com.breskeby.eclipse.gradle.preferences.GradleEditorPreferencePage">
       </page>
       <page
-            name="%PreferencePage.antCodeFormatterPreferences"
-            category="org.eclipse.ant.ui.AntEditorPreferencePage"
+            name="%PreferencePage.gradleCodeFormatterPreferences"
+            category="com.breskeby.eclipse.gradle.preferences.GradleEditorPreferencePage"
             class="org.eclipse.ant.internal.ui.preferences.AntCodeFormatterPreferencePage"
-            id="org.eclipse.ant.ui.AntCodeFormatterPreferencePage">
-            <keywordReference id="org.eclipse.ant.ui.formatter"/>
+            id="com.breskeby.eclipse.gradle.preferences.GradleCodeFormatterPreferencePage">
       </page>
        <page
-            name="%PreferencePage.antCodeAssistPreferences"
-            category="org.eclipse.ant.ui.AntEditorPreferencePage"
+            name="%PreferencePage.gradleCodeAssistPreferences"
+            category="com.breskeby.eclipse.gradle.preferences.GradleEditorPreferencePage"
             class="org.eclipse.ant.internal.ui.preferences.AntCodeAssistPreferencePage"
-            id="org.eclipse.ant.ui.AntCodeAssistPreferencePage">
-            <keywordReference id="org.eclipse.ant.ui.codeAssist"/>
+            id="com.breskeby.eclipse.gradle.preferences.GradleCodeAssistPreferencePage">
       </page>
       <page
-            name="%PreferencePage.antTemplatePreferences"
-            category="org.eclipse.ant.ui.AntEditorPreferencePage"
+            name="%PreferencePage.gradleTemplatePreferences"
+            category="com.breskeby.eclipse.gradle.preferences.GradleEditorPreferencePage"
             class="org.eclipse.ant.internal.ui.editor.templates.AntTemplatePreferencePage"
             id="org.eclipse.ant.ui.TemplatesPreferencePage">
-            <keywordReference id="org.eclipse.ant.ui.template"/>
       </page>
    </extension>
    <extension
