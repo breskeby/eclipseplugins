@@ -1,55 +1,28 @@
 package com.breskeby.eclipse.gradle.preferences;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-//import org.eclipse.ant.core.AntCorePlugin;
-//import org.eclipse.ant.core.AntCorePreferences;
-//import org.eclipse.ant.core.Property;
-//import org.eclipse.ant.core.Task;
-//import org.eclipse.ant.core.Type;
-//import org.eclipse.ant.internal.ui.AntUIPlugin;
-//import org.eclipse.ant.internal.ui.IAntUIHelpContextIds;
-//import org.eclipse.ant.internal.ui.preferences.AntClasspathPage;
-//import org.eclipse.ant.internal.ui.preferences.AntPreferencesMessages;
-//import org.eclipse.ant.internal.ui.preferences.AntPropertiesPage;
-//import org.eclipse.ant.internal.ui.preferences.AntTasksPage;
-//import org.eclipse.ant.internal.ui.preferences.AntTypesPage;
-//import org.eclipse.ant.internal.ui.preferences.TabFolderLayout;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.IntegerFieldEditor;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.jface.resource.StringConverter;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.PlatformUI;
 
 import com.breskeby.eclipse.gradle.GradlePlugin;
-import com.ibm.icu.text.MessageFormat;
+import com.breskeby.eclipse.gradle.ui.TabFolderLayout;
 
 public class GradleRuntimePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 	
 	
-//	private AntClasspathPage classpathPage;
+	private GradleClasspathPage classpathPage;
 //	private AntTasksPage tasksPage;
 //	private AntTypesPage typesPage;
 //	private AntPropertiesPage propertiesPage;
@@ -73,15 +46,15 @@ public class GradleRuntimePreferencePage extends PreferencePage implements IWork
 //	 */
 	protected Control createContents(Composite parent) {
 ////		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IAntUIHelpContextIds.ANT_RUNTIME_PREFERENCE_PAGE);
-//		initializeDialogUnits(parent);
+		initializeDialogUnits(parent);
 //
 		TabFolder folder = new TabFolder(parent, SWT.NONE);
-//		folder.setLayout(new TabFolderLayout());	
-//		folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-//		folder.setFont(parent.getFont());
-//
-//		classpathPage = new AntClasspathPage(this);
-//		classpathPage.createTabItem(folder);
+		folder.setLayout(new TabFolderLayout());	
+		folder.setLayoutData(new GridData(GridData.FILL_BOTH));
+		folder.setFont(parent.getFont());
+
+		classpathPage = new GradleClasspathPage(this);
+		classpathPage.createTabItem(folder);
 //		
 //		tasksPage = new AntTasksPage(this);
 //		tasksPage.createTabItem(folder);
@@ -94,7 +67,7 @@ public class GradleRuntimePreferencePage extends PreferencePage implements IWork
 //		
 //		tasksPage.initialize();
 //		typesPage.initialize();
-//		classpathPage.initialize();
+		classpathPage.initialize();
 //		propertiesPage.initialize();
 //
 		return folder;
@@ -103,30 +76,30 @@ public class GradleRuntimePreferencePage extends PreferencePage implements IWork
 //	/* (non-Javadoc)
 //	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
 //	 */
-//	protected void performDefaults() {
-//		super.performDefaults();
-//		
-//		AntCorePreferences prefs = AntCorePlugin.getPlugin().getPreferences();
+	protected void performDefaults() {
+		super.performDefaults();
+		
+		GradlePreferences prefs = GradlePlugin.getPlugin().getPreferences();
 //		tasksPage.setInput(prefs.getDefaultTasks());
 //		typesPage.setInput(prefs.getDefaultTypes());
-//		classpathPage.performDefaults();
+		classpathPage.performDefaults();
 //		propertiesPage.performDefaults();
-//	}
+	}
 //	
 //	/* (non-Javadoc)
 //	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
 //	 */
 	public boolean performOk() {
-//		AntCorePreferences prefs = AntCorePlugin.getPlugin().getPreferences();
-//		IDialogSettings settings = AntUIPlugin.getDefault().getDialogSettings();
-//		
-//		prefs.setAntHomeClasspathEntries(classpathPage.getAntHomeEntries());
-//		
-//		
+		GradlePreferences prefs = GradlePlugin.getPlugin().getPreferences();
+		IDialogSettings settings = GradlePlugin.getDefault().getDialogSettings();
+		
+		prefs.setGradleHomeClasspathEntries(classpathPage.getGradleHomeEntries());
+		
+		
 //		prefs.setAdditionalClasspathEntries(classpathPage.getAdditionalEntries());
-//		
-//		String antHome= classpathPage.getAntHome();
-//		prefs.setAntHome(antHome);
+		
+		String gradleHome= classpathPage.getGradleHome();
+		prefs.setGradleHome(gradleHome);
 //		
 //		List contents = tasksPage.getContents(false);
 //		if (contents != null) {
@@ -155,7 +128,7 @@ public class GradleRuntimePreferencePage extends PreferencePage implements IWork
 //		
 //		propertiesPage.saveAdditionalSettings();
 //		
-//		prefs.updatePluginPreferences();
+		prefs.updatePluginPreferences();
 //	
 		return super.performOk();
 	}
@@ -167,12 +140,12 @@ public class GradleRuntimePreferencePage extends PreferencePage implements IWork
 		return super.setButtonLayoutData(button);
 	}
 //	
-//	protected List getLibraryEntries() {
-//		List urls= new ArrayList();
-//		urls.addAll(Arrays.asList(classpathPage.getAntHomeEntries()));
+	protected List getLibraryEntries() {
+		List urls= new ArrayList();
+		urls.addAll(Arrays.asList(classpathPage.getGradleHomeEntries()));
 //		urls.addAll(Arrays.asList(classpathPage.getAdditionalEntries()));
 //		urls.addAll(Arrays.asList(classpathPage.getContributedEntries()));
-//		return urls;
-//	}
+		return urls;
+	}
 
 }

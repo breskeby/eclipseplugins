@@ -5,8 +5,13 @@ import java.util.Locale;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import com.breskeby.eclipse.gradle.preferences.GradlePreferences;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -24,15 +29,48 @@ public class GradlePlugin extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.breskeby.eclipse.gradle";
 
+	public static final int ERROR_LIBRARY_NOT_SPECIFIED = 0;
+
+	public static final int ERROR_MALFORMED_URL = 0;
+
+	/**
+	 * Simple identifier constant (value <code>"headless"</code>) of a tag
+	 */
+	public static final String HEADLESS = "headless"; //$NON-NLS-1$
+	
 	// The shared instance
 	private static GradlePlugin plugin;
 
+	/**
+	 * Returns the standard display to be used. The method first checks, if
+	 * the thread calling this method has an associated display. If so, this
+	 * display is returned. Otherwise the method returns the default display.
+	 */
+	public static Display getStandardDisplay() {
+		Display display = Display.getCurrent();
+		if (display == null) {
+			display = Display.getDefault();
+		}
+		return display;
+	}
+	/**
+	 * The preferences class for this plug-in.
+	 */
+	private GradlePreferences preferences;
 	/**
 	 * The constructor
 	 */
 	public GradlePlugin() {
 	}
 
+	/**
+	 * Returns this plug-in instance.
+	 *
+	 * @return the single instance of this plug-in runtime class
+	 */
+	public static GradlePlugin getPlugin() {
+		return plugin;
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
@@ -70,6 +108,19 @@ public class GradlePlugin extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
+	
+	/**
+	 * Returns an object representing this plug-in's preferences.
+	 * 
+	 * @return the Ant core object representing the preferences for this plug-in.
+	 */
+	public GradlePreferences getPreferences() {
+		if (preferences == null) {
+			preferences = new GradlePreferences(false);
+		}
+		return preferences;
+	}
+	
 	
 	/**
 	 * Returns whether the current OS claims to be Mac
@@ -117,4 +168,22 @@ public class GradlePlugin extends AbstractUIPlugin {
 		}		
 		return new Status(IStatus.ERROR, PLUGIN_ID, 0, message, exception);
 	}
+	
+	/**
+	* Returns the active workbench page or <code>null</code> if none.
+	*/
+   public static IWorkbenchPage getActivePage() {
+	   IWorkbenchWindow window= getActiveWorkbenchWindow();
+	   if (window != null) {
+		   return window.getActivePage();
+	   }
+	   return null;
+   }
+
+   /**
+	* Returns the active workbench window or <code>null</code> if none
+	*/
+   public static IWorkbenchWindow getActiveWorkbenchWindow() {
+	   return getDefault().getWorkbench().getActiveWorkbenchWindow();
+   }
 }
