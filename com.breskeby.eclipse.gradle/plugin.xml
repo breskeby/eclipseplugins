@@ -1,7 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-	<extension
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+   		<content-type base-type="org.eclipse.core.runtime.xml"
+			file-names="build.gradle"
+			file-extensions="gradle"
+            id="com.breskeby.eclipse.gradle.contenttype.buildfile"
+            name="Gradle build file"
+            priority="normal">
+      			<describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+         				<parameter name="element" value="apples"/>
+				</describer>
+   		</content-type>
+	</extension>
+	
+	<extension point="org.eclipse.ui.editors">
+      <editor
+            class="com.breskeby.eclipse.gradle.editor.GradleEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            default="true"
+            extensions="gradle"
+            icon="icons/gradle_file.gif"
+            id="com.breskeby.eclipse.gradle.editor.GradleEditor"
+            name="Gradle Editor">
+         <contentTypeBinding
+               contentTypeId="org.codehaus.groovy.eclipse.groovySource">
+         </contentTypeBinding>
+      </editor>
+   </extension>
+   
+   <extension point="org.eclipse.core.runtime.preferences">
+		<initializer class="com.breskeby.eclipse.gradle.preferences.GradlePreferenceInitializer"/>
+	</extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="%PreferencePage.gradlePreferences"
+            class="com.breskeby.eclipse.gradle.preferences.GradleRuntimePreferencePage"
+            id="com.breskeby.eclipse.gradle.preferences.GradleRuntimePreferencePage">
+      </page>
+   </extension>
+   <extension
          id="gradleRunner"
          point="org.eclipse.core.runtime.applications">
      <application>
@@ -10,6 +49,9 @@
          </run>
       </application>
    </extension>
+	<!--
+   
+   -->
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -33,57 +75,17 @@
       </objectContribution>
    </extension>
    
-    <extension point="org.eclipse.core.runtime.preferences">
-		<initializer class="com.breskeby.eclipse.gradle.preferences.GradlePreferenceInitializer"/>
-	</extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            name="%PreferencePage.gradlePreferences"
-            class="com.breskeby.eclipse.gradle.preferences.GradlePreferencePage"
-            id="com.breskeby.eclipse.gradle.preferences.GradlePreferencePage">
-      </page>
-      <page
-            name="%PreferencePage.gradleRuntimePreferences"
-            category="com.breskeby.eclipse.gradle.preferences.GradlePreferencePage"
-            class="com.breskeby.eclipse.gradle.preferences.GradleRuntimePreferencePage"
-            id="com.breskeby.eclipse.gradle.preferences.GradleRuntimePreferencePage">
-      </page>
-      <page
-            name="%PreferencePage.gradleEditorPreferences"
-            category="com.breskeby.eclipse.gradle.preferences.GradlePreferencePage"
-            class="org.eclipse.ant.internal.ui.preferences.AntEditorPreferencePage"
-            id="com.breskeby.eclipse.gradle.preferences.GradleEditorPreferencePage">
-      </page>
-      <page
-            name="%PreferencePage.gradleCodeFormatterPreferences"
-            category="com.breskeby.eclipse.gradle.preferences.GradleEditorPreferencePage"
-            class="org.eclipse.ant.internal.ui.preferences.AntCodeFormatterPreferencePage"
-            id="com.breskeby.eclipse.gradle.preferences.GradleCodeFormatterPreferencePage">
-      </page>
-       <page
-            name="%PreferencePage.gradleCodeAssistPreferences"
-            category="com.breskeby.eclipse.gradle.preferences.GradleEditorPreferencePage"
-            class="org.eclipse.ant.internal.ui.preferences.AntCodeAssistPreferencePage"
-            id="com.breskeby.eclipse.gradle.preferences.GradleCodeAssistPreferencePage">
-      </page>
-      <page
-            name="%PreferencePage.gradleTemplatePreferences"
-            category="com.breskeby.eclipse.gradle.preferences.GradleEditorPreferencePage"
-            class="org.eclipse.ant.internal.ui.editor.templates.AntTemplatePreferencePage"
-            id="org.eclipse.ant.ui.TemplatesPreferencePage">
-      </page>
-   </extension>
+    
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
             category="org.eclipse.ui.externaltools"
-            delegate="org.eclipse.ant.internal.ui.launchConfigurations.AntLaunchDelegate"
+            delegate="com.breskeby.eclipse.gradle.launchConfigurations.GradleLaunchDelegate"
             delegateDescription="%GradleLaunchDelegate.description"
             delegateName="%GradleLaunchDelegate.name"
-            id="org.eclipse.ant.AntLaunchConfigurationType"
-            migrationDelegate="org.eclipse.ant.internal.ui.launchConfigurations.AntMigrationDelegate"
-            modes="run, debug"
+            id="com.breskeby.eclipse.gradle.GradleLaunchConfigurationType"
+            migrationDelegate="com.breskeby.eclipse.gradle.launchConfigurations.GradleMigrationDelegate"
+            modes="run"
             name="%GradleBuild"
             sourceLocatorId="org.eclipse.ant.ui.debug.sourceLookupDirector"
             sourcePathComputerId="org.eclipse.ant.ui.debug.sourcePathComputer">
@@ -99,14 +101,25 @@
       </launchConfigurationType>
    </extension>
    <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="com.breskeby.eclipse.gradle.GradleLaunchConfigurationType"
+            helpContextId="org.eclipse.ui.externaltools.launchConfigHelpContext.ant"
+            description="%gradleLaunchConfigurationTabGroup.description"
+            class="com.breskeby.eclipse.gradle.launchConfigurations.GradleTabGroup"
+            id="com.breskeby.eclipse.gradle.launchConfigurationTabGroup.gradle">
+      </launchConfigurationTabGroup>
+   </extension>
+   
+   <extension
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             category="org.eclipse.ui.externaltools"
-            class="org.eclipse.ant.internal.ui.launchConfigurations.AntLaunchShortcut"
+            class="com.breskeby.eclipse.gradle.launchConfigurations.GradleLaunchShortcut"
             description="%GradleBuildShortcut.description"
             helpContextId="org.eclipse.ui.externaltools.launchShortcutHelpContext.antShortcut"
-            icon="$nl$/icons/full/obj16/ant.gif"
-            id="org.eclipse.ant.ui.gradleShortcut"
+            icon="icons/run_gradle_build.gif"
+            id="com.breskeby.eclipse.gradle.ui.gradleShortcut"
             label="%GradleLaunchShortcut.label"
             modes="run, debug">
         <contextualLaunch>
@@ -123,21 +136,19 @@
            <contextLabel
          	  mode="run"
          	  label="%GradleLaunchShortcut.label"/>
-         <contextLabel
-         	  mode="debug"
-         	  label="%GradleLaunchShortcut.label"/>
   		 </contextualLaunch>
         <configurationType
-              id="org.eclipse.ant.GradleLaunchConfigurationType">
+              id="com.breskeby.eclipse.gradle.GradleLaunchConfigurationType">
         </configurationType>
       </shortcut>
+      <!--
       <shortcut
             category="org.eclipse.ui.externaltools"
-            class="org.eclipse.ant.internal.ui.launchConfigurations.GradleLaunchShortcutWithDialog"
+            class="com.breskeby.eclipse.gradle.launchConfigurations.GradleLaunchShortcutWithDialog"
             description="%GradleBuild...Shortcut.description"
             helpContextId="org.eclipse.ui.externaltools.launchShortcutHelpContext.antShortcutWithDialog"
-            icon="$nl$/icons/full/obj16/ant.gif"
-            id="org.eclipse.ant.ui.antShortcutWithDialog"
+            icon="icons/run_gradle_build.gif"
+            id="com.breskeby.eclipse.gradle.ShortcutWithDialog"
             label="%GradleLaunchShortcutWithDialog.label"
             modes="run, debug">
         <contextualLaunch>
@@ -159,35 +170,8 @@
          	  label="%GradleLaunchShortcutWithDialog.label"/>
   		 </contextualLaunch>
         <configurationType
-              id="org.eclipse.ant.AntLaunchConfigurationType">
+              id="com.breskeby.eclipse.gradle.GradleLaunchConfigurationType">
         </configurationType>
-      </shortcut>
-   </extension>
-   <extension point="org.eclipse.core.contenttype.contentTypes">
-   		<content-type base-type="org.eclipse.core.runtime.xml"
-			file-names="build.gradle"
-			file-extensions="gradle"
-            id="com.breskeby.eclipse.gradle.contenttype.buildfile"
-            name="Gradle build file"
-            priority="normal">
-      			<describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-         				<parameter name="element" value="apples"/>
-				</describer>
-   		</content-type>
-	</extension>
-	
-	<extension point="org.eclipse.ui.editors">
-      <editor
-            class="com.breskeby.eclipse.gradle.editor.GradleEditor"
-            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            default="true"
-            extensions="gradle"
-            icon="icons/groovy_file.gif"
-            id="com.breskeby.eclipse.gradle.editor.GradleEditor"
-            name="Gradle Editor">
-         <contentTypeBinding
-               contentTypeId="org.codehaus.groovy.eclipse.groovySource">
-         </contentTypeBinding>
-      </editor>
+      </shortcut>-->
    </extension>
 </plugin>

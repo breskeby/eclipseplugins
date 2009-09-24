@@ -11,8 +11,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.breskeby.eclipse.gradle.preferences.GradlePreferences;
-
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -53,10 +51,7 @@ public class GradlePlugin extends AbstractUIPlugin {
 		}
 		return display;
 	}
-	/**
-	 * The preferences class for this plug-in.
-	 */
-	private GradlePreferences preferences;
+	
 	/**
 	 * The constructor
 	 */
@@ -108,19 +103,6 @@ public class GradlePlugin extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
-	
-	/**
-	 * Returns an object representing this plug-in's preferences.
-	 * 
-	 * @return the Ant core object representing the preferences for this plug-in.
-	 */
-	public GradlePreferences getPreferences() {
-		if (preferences == null) {
-			preferences = new GradlePreferences(false);
-		}
-		return preferences;
-	}
-	
 	
 	/**
 	 * Returns whether the current OS claims to be Mac
