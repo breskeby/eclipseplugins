@@ -15,6 +15,10 @@ import org.eclipse.osgi.util.NLS;
 public class GradleLaunchConfigurationMessages extends NLS {
 	private static final String BUNDLE_NAME = "com.breskeby.eclipse.gradle.launchConfigurations.GradleLaunchConfigurationMessages";//$NON-NLS-1$
 
+	public static String GradleMainTab__Select_a_build_file__1;
+
+	public static String GradleLaunchDelegate_28;
+
 	public static String GradleLaunchDelegate_Launching__0__1;
 
 	public static String GradleMainTab_1;

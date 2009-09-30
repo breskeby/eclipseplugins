@@ -1,7 +1,13 @@
 package com.breskeby.eclipse.gradle;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Locale;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -9,7 +15,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.packageadmin.ExportedPackage;
+import org.osgi.service.packageadmin.PackageAdmin;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -35,9 +45,17 @@ public class GradlePlugin extends AbstractUIPlugin {
 	 * Simple identifier constant (value <code>"headless"</code>) of a tag
 	 */
 	public static final String HEADLESS = "headless"; //$NON-NLS-1$
+
+	/**
+	 * Status code indicating an error occurred running a build.
+	 * @since 2.1
+	 */
+	public static final int ERROR_RUNNING_BUILD = 1;
+	
 	
 	// The shared instance
 	private static GradlePlugin plugin;
+	
 
 	/**
 	 * Returns the standard display to be used. The method first checks, if
@@ -118,7 +136,7 @@ public class GradlePlugin extends AbstractUIPlugin {
 	 * @param t throwable to log 
 	 */
 	public static void log(Throwable t) {
-		IStatus status= new Status(IStatus.ERROR, PLUGIN_ID, INTERNAL_ERROR, "Error logged from Ant UI: ", t); //$NON-NLS-1$
+		IStatus status= new Status(IStatus.ERROR, PLUGIN_ID, INTERNAL_ERROR, "Error logged from GradlePlugin: ", t); //$NON-NLS-1$
 		log(status);
 	}
 	
@@ -168,4 +186,71 @@ public class GradlePlugin extends AbstractUIPlugin {
    public static IWorkbenchWindow getActiveWorkbenchWindow() {
 	   return getDefault().getWorkbench().getActiveWorkbenchWindow();
    }
+	
+	/**
+	 * Simple algorithm to find the highest version of <code>org.codehaus.gradle</code> 
+	 * available. If there are other providers that are not <code>org.codehaus.gradle</code>
+	 * <code>null</code> is returned so that all bundles will be inspected 
+	 * for contributed libraries.
+	 * <p>
+	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=282851
+	 * </p>
+	 * @param packages the live list of {@link ExportedPackage}s to inspect
+	 * @return the bundle that represents the highest version of <code>org.codehaus.gradle</code> or <code>null</code>
+	 * if there are other providers for the <code>org.gradle</code> packages.
+	 */
+	Bundle findHighestGradleVersion(ExportedPackage[] packages) {
+		Bundle bundle = null;
+		HashSet<Bundle> bundles = new HashSet<Bundle>();
+		for (int i = 0; i < packages.length; i++) {
+			bundle = packages[i].getExportingBundle();
+			if(bundle == null) {
+				continue;
+			}
+			if("org.codehaus.gradle".equals(bundle.getSymbolicName())) { //$NON-NLS-1$
+				bundles.add(bundle);
+			}
+			else {
+				return null;
+			}
+		}
+		Bundle highest = null;
+		Bundle temp = null;
+		for (Iterator<Bundle> iter = bundles.iterator(); iter.hasNext();) {
+			temp = iter.next();
+			if(highest == null) {
+				highest = temp;
+			}
+			else {
+				if(highest.getVersion().compareTo(temp.getVersion()) < 0) {
+					highest = temp;
+				}
+			}
+		}
+		return highest;
+	}
+	
+	public String getDefaultGradleHome(){
+		String gradleHomeString = null;
+		ServiceTracker tracker = new ServiceTracker(GradlePlugin.getPlugin().getBundle().getBundleContext(), PackageAdmin.class.getName(), null);
+		tracker.open();
+		try {
+			PackageAdmin packageAdmin = (PackageAdmin) tracker.getService();
+					
+			if (packageAdmin != null) {
+				ExportedPackage[] packages = packageAdmin.getExportedPackages("org.gradle"); //$NON-NLS-1$
+				Bundle bundle = findHighestGradleVersion(packages);
+				if(bundle!=null){
+					URL entryURL = bundle.getEntry(".");
+					URL fileURL = FileLocator.toFileURL(entryURL);
+					gradleHomeString = new File(fileURL.getPath()).getAbsolutePath();
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally {
+			tracker.close();
+		}
+		return gradleHomeString;
+	}
 }

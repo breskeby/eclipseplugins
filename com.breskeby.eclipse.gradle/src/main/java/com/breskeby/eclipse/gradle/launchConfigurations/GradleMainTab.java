@@ -1,6 +1,5 @@
 package com.breskeby.eclipse.gradle.launchConfigurations;
 
-import org.eclipse.ant.internal.ui.launchConfigurations.AntLaunchConfigurationMessages;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -27,44 +26,6 @@ public class GradleMainTab extends ExternalToolsMainTab {
 	private String fCurrentLocation= null;
 	private Button fSetInputHandlerButton;
     private IFile fNewFile;
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(org.eclipse.debug.core.ILaunchConfiguration)
-	 */
-//	public void initializeFrom(ILaunchConfiguration configuration) {
-//		super.initializeFrom(configuration);
-//		try {
-//			fCurrentLocation= configuration.getAttribute(IExternalToolConstants.ATTR_LOCATION, (String)null);
-//		} catch (CoreException e) {
-//		}
-//		updateCheckButtons(configuration);
-//	}
-//	
-//	/* (non-Javadoc)
-//	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
-//	 */
-//	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-//		super.performApply(configuration);
-//		try {
-//			//has the location changed
-//			String newLocation= configuration.getAttribute(IExternalToolConstants.ATTR_LOCATION, (String)null);
-//			if (newLocation != null) {
-//				if (!newLocation.equals(fCurrentLocation)) {
-//				    updateTargetsTab();
-//				    fCurrentLocation= newLocation;
-//                    updateProjectName(configuration);
-//				}
-//			} else if (fCurrentLocation != null){
-//				updateTargetsTab();
-//				fCurrentLocation= newLocation;
-//                updateProjectName(configuration);
-//			}
-//		} catch (CoreException e) {
-//		}
-//       
-//		setMappedResources(configuration);
-//		setAttribute(IAntUIConstants.SET_INPUTHANDLER, configuration, fSetInputHandlerButton.getSelection(), true);
-//	}
 
 	private void setMappedResources(ILaunchConfigurationWorkingCopy configuration) {
 		IFile file= getIFile(configuration);
@@ -155,7 +116,7 @@ public class GradleMainTab extends ExternalToolsMainTab {
 	 */
 	protected void handleWorkspaceLocationButtonSelected() {
 		FileSelectionDialog dialog;
-		dialog = new FileSelectionDialog(getShell(), ResourcesPlugin.getWorkspace().getRoot(), AntLaunchConfigurationMessages.AntMainTab__Select_a_build_file__1);
+		dialog = new FileSelectionDialog(getShell(), ResourcesPlugin.getWorkspace().getRoot(), GradleLaunchConfigurationMessages.GradleMainTab__Select_a_build_file__1);
 		dialog.open();
 		IStructuredSelection result = dialog.getResult();
 		if (result == null) {

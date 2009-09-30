@@ -19,9 +19,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.debug.ui;bundle-version="3.4.0",
  org.eclipse.ui.externaltools;bundle-version="3.2.0",
  org.eclipse.jdt.core;bundle-version="3.5.0",
- org.eclipse.jdt.launching;bundle-version="3.5.0"
+ org.eclipse.jdt.launching;bundle-version="3.5.0",
+ org.eclipse.ant.core;bundle-version="3.2.100",
+ org.codehaus.gradle;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: com.ibm.icu.text;version="4.0.1",
  org.apache.tools.ant.util
 Bundle-Localization: plugin
+Export-Package: com.breskeby.eclipse.gradle
