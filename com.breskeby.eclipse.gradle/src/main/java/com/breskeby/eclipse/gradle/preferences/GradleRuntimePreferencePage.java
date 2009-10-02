@@ -39,14 +39,14 @@ public class GradleRuntimePreferencePage extends FieldEditorPreferencePage imple
 		label.setLayoutData(gd);
 		label.setLayoutData(gd);
 		label.setFont(font);
-//		
+
 		FieldEditor editor = new StringFieldEditor(IGradlePreferenceConstants.GRADLE_FIND_BUILD_FILE_NAMES, GradlePreferencesMessages.GradleRuntimePreferencePage_BuildFileName, getFieldEditorParent());
 		addField(editor);
 		
-		editor = new DirectoryFieldEditor(IGradlePreferenceConstants.GRADLE_HOME, GradlePreferencesMessages.GradleRuntimePreferencePage_GradleHome_Label, getFieldEditorParent());
+		editor = new DirectoryFieldEditor(IGradlePreferenceConstants.MANUELL_GRADLE_HOME, GradlePreferencesMessages.GradleRuntimePreferencePage_GradleHome_Label, getFieldEditorParent());
 		addField(editor);
 	
-		editor = new BooleanFieldEditor(IGradlePreferenceConstants.GRADLE_ERROR_DIALOG, GradlePreferencesMessages.GradleRuntimePreferencePage_GradleErrorDialog_Label, getFieldEditorParent());
+		editor = new BooleanFieldEditor(IGradlePreferenceConstants.USE_SPECIFIC_GRADLE_HOME, GradlePreferencesMessages.GradleRuntimePreferencePage_USE_MANUEL_GRADLE_HOME, getFieldEditorParent());
 		addField(editor);
 		createSpace();
 		getPreferenceStore().addPropertyChangeListener(this);

@@ -4,6 +4,8 @@ import org.eclipse.osgi.util.NLS;
 
 public class GradlePreferencesMessages extends NLS {
 	private static final String BUNDLE_NAME = "com.breskeby.eclipse.gradle.preferences.GradlePreferencesMessages";//$NON-NLS-1$
+
+	public static String GradleRuntimePreferencePage_USE_MANUEL_GRADLE_HOME;
 	
 	public static String GradleRuntimePreferencePage_Description;
 
