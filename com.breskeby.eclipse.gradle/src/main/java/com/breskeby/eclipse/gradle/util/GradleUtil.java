@@ -2,6 +2,7 @@ package com.breskeby.eclipse.gradle.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.StringTokenizer;
 
 import org.apache.tools.ant.util.FileUtils;
 import org.eclipse.core.resources.IFile;
@@ -21,6 +22,28 @@ public class GradleUtil {
 		}
 
 		return buildFile;
+	}
+	
+	/**
+	 * Returns the list of Strings that were delimiter separated.
+	 * 
+	 * @param delimString the String to be tokenized based on the delimiter
+	 * @return a list of Strings
+	 */
+	public static String[] parseString(String delimString, String delim) {
+		if (delimString == null) {
+			return new String[0];
+		}
+		
+		// Need to handle case where separator character is
+		// actually part of the target name!
+		StringTokenizer tokenizer = new StringTokenizer(delimString, delim);
+		String[] results = new String[tokenizer.countTokens()];
+		for (int i = 0; i < results.length; i++) {
+			results[i] = tokenizer.nextToken();
+		}
+		
+		return results;
 	}
 	
 	/**

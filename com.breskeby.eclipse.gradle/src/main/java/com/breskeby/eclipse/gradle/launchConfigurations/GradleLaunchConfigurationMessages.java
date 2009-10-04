@@ -35,6 +35,22 @@ public class GradleLaunchConfigurationMessages extends NLS {
 	public static String GradleMainTab_0;
 
 	public static String GradleLaunchDelegate_23;
+
+	public static String GradleLaunchShortcut_Unable;
+
+	public static String GradleLaunchShortcut_2;
+
+	public static String GradleLaunchShortcut_4;
+
+	public static String GradleLaunchShortcut_5;
+
+	public static String GradleLaunchShortcut_3;
+
+	public static String GradleLaunchShortcut_Build_Failed_2;
+
+	public static String GradleLaunchShortcut_Error_7;
+
+	public static String GradleLaunchShortcut_Exception_launching;
 	
 	static {
 		// load message values from bundle file

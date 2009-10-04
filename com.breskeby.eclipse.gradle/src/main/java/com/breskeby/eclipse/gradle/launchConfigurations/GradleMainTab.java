@@ -159,7 +159,6 @@ public class GradleMainTab extends ExternalToolsMainTab {
 	//empty method needed to hide working directory
 	@Override
 	protected void updateWorkingDirectory(ILaunchConfiguration configuration) {
-		// TODO Auto-generated method stub
 	//	super.updateWorkingDirectory(configuration);
 	}
 	
