@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
@@ -205,7 +206,7 @@ public class GradlePlugin extends AbstractUIPlugin {
 	 */
 	Bundle findHighestGradleVersion(ExportedPackage[] packages) {
 		Bundle bundle = null;
-		HashSet bundles = new HashSet();
+		Set bundles = new HashSet();
 		for (int i = 0; i < packages.length; i++) {
 			bundle = packages[i].getExportingBundle();
 			if(bundle == null) {
