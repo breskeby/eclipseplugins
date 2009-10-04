@@ -37,11 +37,30 @@ public class GradleStreamsProxy implements IStreamsProxy {
 	 * @see org.eclipse.debug.core.model.IStreamsProxy#write(java.lang.String)
 	 */
 	public void write(String input) {
-////		getOutputStreamMonitor()^
-//		getOutputStreamMonitor().
-		fOutputMonitor.append(input);
+		//change this: @FIXME use more sophisticated approach
+		String[] split = input.split("\n");
+		for(String line : split){
+			GradleStreamMonitor monitor = getMonitorByLineParsing(line);
+			monitor.append(line);
+			monitor.append("\n");
+		}
+	}
+
+	private GradleStreamMonitor getMonitorByLineParsing(String line) {
+		if(line.contains(" [main] DEBUG ")){
+			return fDebugMonitor;
+		}else if(line.contains("[main] WARN  ")){
+			return fWarningMonitor;
+		}else if(line.contains("[main] INFO  ")){
+			return fWarningMonitor;
+		}else if(line.contains("[main] ERROR ")){
+			return fErrorMonitor;
+		}else if(line.contains("[main] ERROR ")){
+			return fErrorMonitor;
+		}
 		
-		System.out.println("IStreamMonitor write " + input);
+		return fOutputMonitor;
+		
 	}
 
 	public IStreamMonitor getWarningStreamMonitor() {

@@ -147,5 +147,67 @@
               id="com.breskeby.eclipse.gradle.GradleLaunchConfigurationType">
         </configurationType>
       </shortcut>
+      <shortcut
+            category="org.eclipse.ui.externaltools"
+            class="com.breskeby.eclipse.gradle.launchConfigurations.GradleLaunchShortcutWithDialog"
+            description="%GradleBuild...Shortcut.description"
+            helpContextId="org.eclipse.ui.externaltools.launchShortcutHelpContext.antShortcut"
+            icon="icons/run_gradle_build.gif"
+            id="com.breskeby.eclipse.gradle.ui.gradleShortcutWithDialog"
+            label="%GradleLaunchShortcutWithDialog.label"
+            modes="run, debug">
+        <contextualLaunch>
+        	<enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesContentType" value="com.breskeby.eclipse.gradle.contenttype.buildfile"/>
+                 </or>
+               </iterate>
+             </with>
+           </enablement>
+           <contextLabel
+         	  mode="run"
+         	  label="%GradleLaunchShortcutWithDialog.label"/>
+          <contextLabel
+         	  mode="debug"
+         	  label="%GradleLaunchShortcutWithDialog.label"/>
+  		 </contextualLaunch>
+        <configurationType
+              id="com.breskeby.eclipse.gradle.GradleLaunchConfigurationType">
+        </configurationType>
+      </shortcut>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.console.consolePatternMatchListeners">
+      <consolePatternMatchListener
+            class="org.eclipse.ant.internal.ui.console.EclipseJavacPatternMatcher"
+            id="org.eclipse.ant.ui.eclipseJavacPatternMatcher"
+            qualifier="javac"
+            regex="\[javac.*\].*(ERROR|WARNING) in.*">
+         <enablement>
+            <test property="org.eclipse.debug.ui.processTypeTest" value="org.eclipse.ant.ui.antProcess"/>
+         </enablement>
+      </consolePatternMatchListener>
+	   <!--<consolePatternMatchListener
+         class="org.eclipse.ant.internal.ui.console.JavacPatternMatcher"
+         id="org.eclipse.ant.ui.JavacPatternMatcher"
+         qualifier="javac"
+         regex="\[.*javac.*\] .*(\.java:.*:.*|.*\.java)">
+         <enablement>
+            <test property="org.eclipse.debug.ui.processTypeTest" value="org.eclipse.ant.ui.antProcess"/>
+         </enablement>
+      </consolePatternMatchListener>
+	  <consolePatternMatchListener
+         class="org.eclipse.ant.internal.ui.console.JikesJavacPatternMatcher"
+         id="org.eclipse.ant.ui.JikesJavacPatternMatcher"
+         qualifier="javac"
+         regex="\[javac\].*\&quot;.*\&quot;:">
+         <enablement>
+            <test property="org.eclipse.debug.ui.processTypeTest" value="org.eclipse.ant.ui.antProcess"/>
+         </enablement>
+      </consolePatternMatchListener>-->      
    </extension>
 </plugin>

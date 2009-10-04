@@ -16,9 +16,7 @@ import com.breskeby.eclipse.gradle.preferences.IGradlePreferenceConstants;
 
 public class GradleConsoleColorProvider extends ConsoleColorProvider implements IPropertyChangeListener {
 
-    
-	
-	/* (non-Javadoc)
+ 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.console.IConsoleColorProvider#getColor(java.lang.String)
 	 */
 	public Color getColor(String streamIdentifer) {
@@ -49,7 +47,6 @@ public class GradleConsoleColorProvider extends ConsoleColorProvider implements 
 		// org.eclipse.debug.core.processFactories extension point
 		
 		GradleStreamsProxy proxy = (GradleStreamsProxy)process.getStreamsProxy();
-		System.out.println("proxy " + proxy);
 		if (process instanceof GradleProcess) {
 			((GradleProcess)process).setConsole(console);
 		}

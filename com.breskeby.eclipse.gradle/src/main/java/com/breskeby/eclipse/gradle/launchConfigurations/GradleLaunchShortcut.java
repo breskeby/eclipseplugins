@@ -205,14 +205,14 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 			if (!DebugUITools.saveBeforeLaunch()) {
 				return;
 			}
-			IStatus status = new Status(IStatus.INFO, GradlePlugin.PLUGIN_ID,IGradleConstants.STATUS_INIT_RUN_GRADLE, "", null); //$NON-NLS-1$
+			IStatus status = new Status(IStatus.INFO, GradlePlugin.PLUGIN_ID,IGradleConstants.STATUS_INIT_RUN_GRADLE, "BLUBB", null); //$NON-NLS-1$
 			String groupId;
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			    groupId= IDebugUIConstants.ID_DEBUG_LAUNCH_GROUP;
 			} else {
 			    groupId= IExternalToolConstants.ID_EXTERNAL_TOOLS_LAUNCH_GROUP;
 			}
-			DebugUITools.openLaunchConfigurationDialog(GradlePlugin.getActiveWorkbenchWindow().getShell(), configuration, groupId, status);
+			DebugUITools.openLaunchConfigurationDialog(GradlePlugin.getActiveWorkbenchWindow().getShell(), configuration, groupId, null);
 		} else {
 			DebugUITools.launch(configuration, mode);
 		}
@@ -386,7 +386,7 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 				filepath = locationProvider.getPath(input);
 			}
 		}
-		if(filepath != null && "xml".equals(filepath.getFileExtension())) { //$NON-NLS-1$
+		if(filepath != null && "gradle".equals(filepath.getFileExtension())) { //$NON-NLS-1$
 //			TODO
 //			launch(filepath, (file == null ? null : file.getProject()), mode, null);
 			return;

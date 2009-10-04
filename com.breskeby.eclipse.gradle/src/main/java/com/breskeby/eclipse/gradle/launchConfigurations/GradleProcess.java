@@ -1,6 +1,5 @@
 package com.breskeby.eclipse.gradle.launchConfigurations;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,15 +23,7 @@ public class GradleProcess extends PlatformObject implements IProcess, IProgress
 	public GradleProcess(String label, ILaunch launch, Map attributes) {
 		fLabel = label;
 		fLaunch = launch;
-		if (attributes == null) {
-			fAttributes = new HashMap();
-		} else {
-			fAttributes = attributes;
-		}
-//		String captureOutput= launch.getAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT);
-//		if(!("false".equals(captureOutput))) { //$NON-NLS-1$
-			fProxy= new GradleStreamsProxy();
-//		}
+		fProxy= new GradleStreamsProxy();
 		launch.addProcess(this);
 	}
 
@@ -61,8 +52,6 @@ public class GradleProcess extends PlatformObject implements IProcess, IProgress
 	 * @see org.eclipse.debug.core.model.IProcess#getAttribute(java.lang.String)
 	 */
 	public String getAttribute(String key) {
-		System.out.println("GradleProcess getAttr " + key );
-		
 		return (String)fAttributes.get(key);
 	}
 
@@ -110,7 +99,6 @@ public class GradleProcess extends PlatformObject implements IProcess, IProgress
 	 * @return console, or <code>null</code>
 	 */
 	public IConsole getConsole() {
-		System.out.println("GradleProcess getConsole");
 		return fConsole;
 	}
 	
@@ -120,7 +108,6 @@ public class GradleProcess extends PlatformObject implements IProcess, IProgress
 	 * @param console
 	 */
 	public void setConsole(IConsole console) {
-		System.out.println("set Console " + console);
 		fConsole = console;
 	}
 	
@@ -130,17 +117,12 @@ public class GradleProcess extends PlatformObject implements IProcess, IProgress
 	 * @see org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String, int)
 	 */
 	public void beginTask(String name, int totalWork) {
-
-		System.out.println("GradleProcess begintask" + name);
-		
 	}
 
 	/**
 	 * @see org.eclipse.core.runtime.IProgressMonitor#done()
 	 */
 	public void done() {
-		System.out.println("GradleProcess done" );
-		
 	}
 
 	/**
