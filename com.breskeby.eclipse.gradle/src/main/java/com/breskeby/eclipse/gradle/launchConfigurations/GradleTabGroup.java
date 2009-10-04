@@ -11,7 +11,6 @@ import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
-import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsBuildTab;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
 public class GradleTabGroup extends AbstractLaunchConfigurationTabGroup {
@@ -22,13 +21,6 @@ public class GradleTabGroup extends AbstractLaunchConfigurationTabGroup {
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 			new GradleMainTab(),
-//			new RefreshTab(),
-			new ExternalToolsBuildTab(),
-//			new AntTargetsTab(),
-//			new AntClasspathTab(),
-//			new AntPropertiesTab(),
-//			new AntJRETab(),
-//			new AntEnvironmentTab(),
 			new CommonTab()
 		};
 		setTabs(tabs);
@@ -43,7 +35,7 @@ public class GradleTabGroup extends AbstractLaunchConfigurationTabGroup {
 		if (resource != null && resource instanceof IFile) {
 			IFile file = (IFile)resource;
 			String extension = file.getFileExtension();
-			if (extension != null && extension.equalsIgnoreCase("xml")) { //$NON-NLS-1$
+			if (extension != null && extension.equalsIgnoreCase("gradle")) { //$NON-NLS-1$
 				String projectName= file.getProject().getName();
 				StringBuffer buffer = new StringBuffer(projectName);
 				buffer.append(' ');
@@ -57,7 +49,6 @@ public class GradleTabGroup extends AbstractLaunchConfigurationTabGroup {
 						VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", file.getFullPath().toString())); //$NON-NLS-1$
 			}		
 		}
-		configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, "org.eclipse.ant.ui.AntClasspathProvider"); //$NON-NLS-1$
 		super.setDefaults(configuration);
 	}	
 }

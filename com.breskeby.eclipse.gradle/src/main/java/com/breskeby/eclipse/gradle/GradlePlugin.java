@@ -10,7 +10,9 @@ import java.util.Locale;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -20,6 +22,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
+
+import com.breskeby.eclipse.gradle.util.ColorManager;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -201,7 +205,7 @@ public class GradlePlugin extends AbstractUIPlugin {
 	 */
 	Bundle findHighestGradleVersion(ExportedPackage[] packages) {
 		Bundle bundle = null;
-		HashSet<Bundle> bundles = new HashSet<Bundle>();
+		HashSet bundles = new HashSet();
 		for (int i = 0; i < packages.length; i++) {
 			bundle = packages[i].getExportingBundle();
 			if(bundle == null) {
@@ -253,4 +257,13 @@ public class GradlePlugin extends AbstractUIPlugin {
 		}
 		return gradleHomeString;
 	}
+	
+	
+	
+	/**
+	 * Returns the preference color, identified by the given preference.
+	 */
+	public static Color getPreferenceColor(String pref) {
+		return ColorManager.getDefault().getColor(PreferenceConverter.getColor(getDefault().getPreferenceStore(), pref));
+	}	
 }

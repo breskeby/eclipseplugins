@@ -13,7 +13,13 @@
 				</describer>
    		</content-type>
 	</extension>
-	
+	<extension point="org.eclipse.debug.ui.consoleColorProviders">
+      <consoleColorProvider
+            class="com.breskeby.eclipse.gradle.ui.console.GradleConsoleColorProvider"
+            processType="org.breskeby.eclipse.gradle.gradleProcess"
+            id="com.breskeby.eclipse.gradle.ui.consoleColorProvider">
+      </consoleColorProvider>
+   </extension>
 	<extension point="org.eclipse.ui.editors">
       <editor
             class="com.breskeby.eclipse.gradle.editor.GradleEditor"

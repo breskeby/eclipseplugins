@@ -31,6 +31,10 @@ public class GradleLaunchConfigurationMessages extends NLS {
 
 
 	protected static String GradleLaunchDelegate_Build_In_Progress;
+
+	public static String GradleMainTab_0;
+
+	public static String GradleLaunchDelegate_23;
 	
 	static {
 		// load message values from bundle file

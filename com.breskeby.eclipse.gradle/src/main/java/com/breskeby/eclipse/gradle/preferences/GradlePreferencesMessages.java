@@ -16,6 +16,20 @@ public class GradlePreferencesMessages extends NLS {
 	public static String GradleRuntimePreferencePage_Enter;
 	public static String GradleRuntimePreferencePage_GradleErrorDialog_Label;
 
+	public static String GradlePreferencePage_Gradle_Color_Options__6;
+
+	public static String GradlePreferencePage_Color__7;
+
+	public static String GradlePreferencePage__Error__2;
+
+	public static String GradlePreferencePage__Warning__3;
+
+	public static String GradlePreferencePage_I_nformation__4;
+
+	public static String GradlePreferencePage_Ve_rbose__5;
+
+	public static String GradlePreferencePage_Deb_ug__6;
+
 	
 	static {
 		// load message values from bundle file

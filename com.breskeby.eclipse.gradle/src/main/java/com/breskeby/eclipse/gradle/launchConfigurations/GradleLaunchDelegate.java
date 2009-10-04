@@ -1,6 +1,7 @@
 package com.breskeby.eclipse.gradle.launchConfigurations;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -8,21 +9,19 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.eclipse.debug.ui.CommonTab;
-import org.gradle.foundation.ipc.gradle.ExecuteGradleCommandServerProtocol;
-import org.gradle.gradleplugin.foundation.GradlePluginLord;
+import org.eclipse.debug.ui.RefreshTab;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
 import com.breskeby.eclipse.gradle.GradlePlugin;
+import com.breskeby.eclipse.gradle.preferences.IGradlePreferenceConstants;
 import com.ibm.icu.text.MessageFormat;
 
 public class GradleLaunchDelegate extends LaunchConfigurationDelegate  {
 
+	@SuppressWarnings("restriction")
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		System.out.println("GradleDefaultHOME: " + GradlePlugin.getPlugin().getDefaultGradleHome());
-		
-		
-		if (monitor.isCanceled()) {
-			return;
-		}
 		if (monitor.isCanceled()) {
 			return;
 		}
@@ -36,9 +35,10 @@ public class GradleLaunchDelegate extends LaunchConfigurationDelegate  {
 			return;
 		}
 
+		//get Argument String
+		String cmdLine = configuration.getAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, "");
 		monitor.worked(1);
-		
-		runInSeparateVM(configuration, launch, monitor, "idStamp", GradlePlugin.getPlugin().getDefaultGradleHome(), 2233, 2234, new StringBuffer("gradle -t"), false, false);
+		runGradleBuild(configuration, launch, monitor, "idStamp" + System.currentTimeMillis(), cmdLine);
 		monitor.worked(60);
 		if (monitor.isCanceled()) {
 			return;
@@ -46,13 +46,36 @@ public class GradleLaunchDelegate extends LaunchConfigurationDelegate  {
 		monitor.done();
 	}
 	
-	private void runInSeparateVM(ILaunchConfiguration configuration, ILaunch launch, IProgressMonitor monitor, String idStamp, String gradleHome, int port, int requestPort, StringBuffer commandLine, boolean captureOutput, boolean setInputHandler) throws CoreException {
-		GradlePluginLord gradlePluginLord = new GradlePluginLord();
-		gradlePluginLord.setLogLevel(org.gradle.api.logging.LogLevel.DEBUG);
-		gradlePluginLord.setGradleHomeDirectory(new File(GradlePlugin.getPlugin().getDefaultGradleHome()));
-		gradlePluginLord.setCurrentDirectory(new File("/Users/Rene/workspaces/github/runtime-com.breskeby.eclipse.gradle.gradleRunner/TestProjekt"));
-		ExecuteGradleCommandServerProtocol.ExecutionInteraction executionlistener = new DefaultExecutionInteraction();
-		gradlePluginLord.startExecutionQueue();
-		gradlePluginLord.addExecutionRequestToQueue(commandLine.toString(), executionlistener);
+	@SuppressWarnings("unchecked")
+	private void runGradleBuild(ILaunchConfiguration configuration, ILaunch launch, IProgressMonitor monitor, String idStamp, String commandLine) throws CoreException {
+		Map attributes= new HashMap(2);
+//		attributes.put(IProcess.ATTR_PROCESS_TYPE, IGradleLaunchConfigurationConstants.ID_GRADLE_PROCESS_TYPE);
+//		attributes.put(IGradleLaunchConfigurationConstants.GRADLE_PROCESS_ID, idStamp);
+		//get build file location
+//		String buildfilePath = configuration.getAttribute(IExternalToolConstants.ATTR_LOCATION, "");
+		
+		final GradleProcess process = new GradleProcess("GradleProcess", launch, attributes);
+		
+		GradleRunner runner = new GradleRunner(configuration, launch, commandLine);
+		try {
+			runner.run(monitor);
+		} catch (CoreException e) {
+			process.terminated();
+			e.printStackTrace();
+			handleException(e, GradleLaunchConfigurationMessages.GradleLaunchDelegate_23);
+			return;
+		}
+		RefreshTab.refreshResources(configuration, monitor);
+	}
+	
+	private void handleException(final CoreException e, final String title) {
+		IPreferenceStore store= GradlePlugin.getDefault().getPreferenceStore();
+		if (store.getBoolean(IGradlePreferenceConstants.GRADLE_ERROR_DIALOG)) {
+			GradlePlugin.getStandardDisplay().asyncExec(new Runnable() {
+				public void run() {
+					MessageDialogWithToggle.openError(null, title, e.getMessage(), GradleLaunchConfigurationMessages.GradleLaunchDelegate_22, false, GradlePlugin.getDefault().getPreferenceStore(), IGradlePreferenceConstants.GRADLE_ERROR_DIALOG);
+				}
+			});
+		}
 	}
 }

@@ -6,6 +6,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.dialogs.Dialog;
@@ -76,7 +77,7 @@ public class GradleMainTab extends ExternalToolsMainTab {
 		mainComposite.setLayoutData(gridData);
 		mainComposite.setFont(parent.getFont());
 		createLocationComponent(mainComposite);
-		createWorkDirectoryComponent(mainComposite);
+//		createWorkDirectoryComponent(mainComposite);
 		createArgumentComponent(mainComposite);
 		createVerticalSpacer(mainComposite, 2);
 		createSetInputHandlerComponent(mainComposite);
@@ -134,5 +135,35 @@ public class GradleMainTab extends ExternalToolsMainTab {
 	 */
 	protected String getLocationLabel() {
 		return GradleLaunchConfigurationMessages.GradleMainTab_1;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
+	 */
+	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
+		String location= locationField.getText().trim();
+		if (location.length() == 0) {
+			configuration.setAttribute(IExternalToolConstants.ATTR_LOCATION, (String)null);
+		} else {
+			configuration.setAttribute(IExternalToolConstants.ATTR_LOCATION, location);
+		}
+
+		String arguments= argumentField.getText().trim();
+		if (arguments.length() == 0) {
+			configuration.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, (String)null);
+		} else {
+			configuration.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, arguments);
+		}
+	}
+	
+	//empty method needed to hide working directory
+	@Override
+	protected void updateWorkingDirectory(ILaunchConfiguration configuration) {
+		// TODO Auto-generated method stub
+	//	super.updateWorkingDirectory(configuration);
+	}
+	
+	protected boolean validateWorkDirectory(){
+		return true;
 	}
 }
