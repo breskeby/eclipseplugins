@@ -11,18 +11,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 public class GradleUtil {
-	/**
-	 * Return a buildfile from the specified location.
-	 * If there isn't one return null.
-	 */
-	private static File getBuildFile(String path) {
-		File buildFile = new File(path);
-		if (!buildFile.isFile() || !buildFile.exists()) { 
-			return null;
-		}
-
-		return buildFile;
-	}
 	
 	/**
 	 * Returns the list of Strings that were delimiter separated.
@@ -60,6 +48,7 @@ public class GradleUtil {
 	 * @return file or <code>null</code>
 	 * @see org.eclipse.core.resources.IWorkspaceRoot#findFilesForLocation(IPath)
 	 */
+	@SuppressWarnings("deprecation")
 	public static IFile getFileForLocation(String path, File buildFileParent) {
 		if (path == null) {
 			return null;

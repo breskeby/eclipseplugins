@@ -42,10 +42,6 @@ public class GradleConsoleColorProvider extends ConsoleColorProvider implements 
 	 * @see org.eclipse.debug.ui.console.IConsoleColorProvider#connect(org.eclipse.debug.core.model.IProcess, org.eclipse.debug.ui.console.IConsole)
 	 */
 	public void connect(IProcess process, IConsole console) {
-		//Both remote and local Ant builds are guaranteed to have
-		//an AntStreamsProxy. The remote Ant builds make use of the
-		// org.eclipse.debug.core.processFactories extension point
-		
 		GradleStreamsProxy proxy = (GradleStreamsProxy)process.getStreamsProxy();
 		if (process instanceof GradleProcess) {
 			((GradleProcess)process).setConsole(console);
@@ -72,7 +68,7 @@ public class GradleConsoleColorProvider extends ConsoleColorProvider implements 
 	public void propertyChange(PropertyChangeEvent event) {
 	    final String streamId = getStreamId(event.getProperty());
 		if (streamId != null) {
-			GradlePlugin.getPlugin().getStandardDisplay().asyncExec(new Runnable() {
+			GradlePlugin.getStandardDisplay().asyncExec(new Runnable() {
 				public void run() {
 				    IOConsoleOutputStream stream = getConsole().getStream(streamId);
 				    if (stream != null) {
@@ -84,27 +80,25 @@ public class GradleConsoleColorProvider extends ConsoleColorProvider implements 
 	}
 
 	private String getStreamId(String colorId) {
-//		if (IAntUIPreferenceConstants.CONSOLE_DEBUG_COLOR.equals(colorId)) {
-//			return AntStreamsProxy.ANT_DEBUG_STREAM;
-//		} else if (IAntUIPreferenceConstants.CONSOLE_ERROR_COLOR.equals(colorId)) {
-//			return IDebugUIConstants.ID_STANDARD_ERROR_STREAM;
-//		} else if (IAntUIPreferenceConstants.CONSOLE_INFO_COLOR.equals(colorId)) {
-//			return IDebugUIConstants.ID_STANDARD_OUTPUT_STREAM;
-//		} else if (IAntUIPreferenceConstants.CONSOLE_VERBOSE_COLOR.equals(colorId)) {
-//			return AntStreamsProxy.ANT_VERBOSE_STREAM;
-//		} else if (IAntUIPreferenceConstants.CONSOLE_WARNING_COLOR.equals(colorId)) {
-//			return GradleStreamsProxy.GRADLE_WARNING_STREAM;
-//		}
-		System.out.println("getStreamId " + colorId);
-		return GradleStreamsProxy.GRADLE_DEBUG_STREAM;
-//		return null;
+		if (IGradlePreferenceConstants.CONSOLE_DEBUG_COLOR.equals(colorId)) {
+			return GradleStreamsProxy.GRADLE_DEBUG_STREAM;
+		} else if (IGradlePreferenceConstants.CONSOLE_ERROR_COLOR.equals(colorId)) {
+			return IDebugUIConstants.ID_STANDARD_ERROR_STREAM;
+		} else if (IGradlePreferenceConstants.CONSOLE_INFO_COLOR.equals(colorId)) {
+			return IDebugUIConstants.ID_STANDARD_OUTPUT_STREAM;
+		} else if (IGradlePreferenceConstants.CONSOLE_VERBOSE_COLOR.equals(colorId)) {
+			return GradleStreamsProxy.GRADLE_VERBOSE_STREAM;
+		} else if (IGradlePreferenceConstants.CONSOLE_WARNING_COLOR.equals(colorId)) {
+			return GradleStreamsProxy.GRADLE_WARNING_STREAM;
+		}
+		return null;
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.console.IConsoleColorProvider#disconnect()
 	 */
 	public void disconnect() {
-//		AntUIPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+		GradlePlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 		super.disconnect();
 	}
 }

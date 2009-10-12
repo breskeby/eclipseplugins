@@ -18,10 +18,16 @@ import com.breskeby.eclipse.gradle.GradlePlugin;
 import com.breskeby.eclipse.gradle.preferences.IGradlePreferenceConstants;
 import com.ibm.icu.text.MessageFormat;
 
+
+/**
+ * @Author breskeby
+ **/
+@SuppressWarnings("restriction")
 public class GradleLaunchDelegate extends LaunchConfigurationDelegate  {
 
 	@SuppressWarnings("restriction")
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
+		
 		if (monitor.isCanceled()) {
 			return;
 		}
@@ -49,11 +55,6 @@ public class GradleLaunchDelegate extends LaunchConfigurationDelegate  {
 	@SuppressWarnings("unchecked")
 	private void runGradleBuild(ILaunchConfiguration configuration, ILaunch launch, IProgressMonitor monitor, String idStamp, String commandLine) throws CoreException {
 		Map attributes= new HashMap(2);
-//		attributes.put(IProcess.ATTR_PROCESS_TYPE, IGradleLaunchConfigurationConstants.ID_GRADLE_PROCESS_TYPE);
-//		attributes.put(IGradleLaunchConfigurationConstants.GRADLE_PROCESS_ID, idStamp);
-		//get build file location
-//		String buildfilePath = configuration.getAttribute(IExternalToolConstants.ATTR_LOCATION, "");
-		
 		final GradleProcess process = new GradleProcess("GradleProcess", launch, attributes);
 		
 		GradleRunner runner = new GradleRunner(configuration, launch, commandLine);

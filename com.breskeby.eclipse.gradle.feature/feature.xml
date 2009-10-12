@@ -31,10 +31,12 @@
       <import plugin="org.eclipse.ui.externaltools" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.jdt.core" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.launching" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.codehaus.gradle" version="0.8.0" match="greaterOrEqual"/>
+      <import plugin="org.codehaus.gradle" version="0.8.0" match="compatible"/>
       <import plugin="org.eclipse.ui.console" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="com.ibm.icu"/>
       <import plugin="org.apache.ant"/>
+      <import feature="org.codehaus.groovy.eclipse.feature" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.codehaus.groovy.eclipse.ui"/>
    </requires>
 
    <plugin

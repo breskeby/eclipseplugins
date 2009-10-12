@@ -10,5 +10,4 @@ public class IGradleLaunchConfigurationConstants {
 	 */
 	public static final String ID_GRADLE_LAUNCH_CONFIGURATION_TYPE = "com.breskeby.eclipse.gradle.GradleLaunchConfigurationType"; //$NON-NLS-1$
 	public static final String ATTR_GRADLE_TARGETS = "ATTR_GRADLE_TARGETS";
-
 }

@@ -26,7 +26,6 @@ public class GradlePreferenceInitializer extends AbstractPreferenceInitializer {
 
 	
 	private void initGradleRuntimePreferences(IPreferenceStore prefs) {
-		System.out.println("InitGradleRuntime");
 		prefs.setDefault(IGradlePreferenceConstants.USE_SPECIFIC_GRADLE_HOME, false);
 		prefs.setDefault(IGradlePreferenceConstants.GRADLE_FIND_BUILD_FILE_NAMES, "build.gradle");
 		String gradleHome = getDefaultGradleHome();
@@ -47,12 +46,11 @@ public class GradlePreferenceInitializer extends AbstractPreferenceInitializer {
 	/**
 	 * Returns the absolute path of the default gradle.home to use for the build.
 	 * 
-	 * @return String absolute path of the default ant.home
+	 * @return String absolute path of the default gradle.home
 	 * @since 3.0
 	 */
 	public String getDefaultGradleHome() {
 		String home = System.getProperty("GRADLE_HOME");
-		System.out.println("Gradle Home: " + home);
 		return home;
 	}
 }

@@ -68,8 +68,6 @@ public class GradleStreamsProxy implements IStreamsProxy {
 	}
 	
 	public IStreamMonitor getDebugStreamMonitor() {
-		System.out.println("IStreamMonitor debug ");
-		
 		return fDebugMonitor;
 	}	
 	

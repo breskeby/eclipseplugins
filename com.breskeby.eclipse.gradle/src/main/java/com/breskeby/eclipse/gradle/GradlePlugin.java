@@ -27,6 +27,8 @@ import org.osgi.util.tracker.ServiceTracker;
 import com.breskeby.eclipse.gradle.util.ColorManager;
 
 /**
+ * @author breskeby
+ * 
  * The activator class controls the plug-in life cycle
  */
 public class GradlePlugin extends AbstractUIPlugin {
@@ -89,6 +91,7 @@ public class GradlePlugin extends AbstractUIPlugin {
 	public static GradlePlugin getPlugin() {
 		return plugin;
 	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
@@ -204,6 +207,7 @@ public class GradlePlugin extends AbstractUIPlugin {
 	 * @return the bundle that represents the highest version of <code>org.codehaus.gradle</code> or <code>null</code>
 	 * if there are other providers for the <code>org.gradle</code> packages.
 	 */
+	@SuppressWarnings("unchecked")
 	Bundle findHighestGradleVersion(ExportedPackage[] packages) {
 		Bundle bundle = null;
 		Set bundles = new HashSet();
@@ -235,6 +239,9 @@ public class GradlePlugin extends AbstractUIPlugin {
 		return highest;
 	}
 	
+	/**
+	 * @return the absolute path to the defaultGradleHome directory
+	 * */
 	public String getDefaultGradleHome(){
 		String gradleHomeString = null;
 		ServiceTracker tracker = new ServiceTracker(GradlePlugin.getPlugin().getBundle().getBundleContext(), PackageAdmin.class.getName(), null);
@@ -256,11 +263,27 @@ public class GradlePlugin extends AbstractUIPlugin {
 		}finally {
 			tracker.close();
 		}
+		
+		//check if gradle scripts are executable
+		makeGradleScriptsExecutable(gradleHomeString);
 		return gradleHomeString;
 	}
 	
 	
-	
+	/**
+	 * this is necessary because root.permissions in feature build.properties doesn't work yet
+	 * */
+	private void makeGradleScriptsExecutable(String gradleHomeString) {
+		String gradleBinPath = gradleHomeString + System.getProperty("file.separator") + "bin"+System.getProperty("file.separator");
+		File scriptMacLinux = new File(gradleBinPath+"gradle");
+		File scriptWin = new File(gradleBinPath+"gradle.bat");
+		
+		//setScripts executable
+		scriptMacLinux.setExecutable(true);
+		scriptWin.setExecutable(true);
+
+	}
+
 	/**
 	 * Returns the preference color, identified by the given preference.
 	 */

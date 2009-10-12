@@ -15,14 +15,18 @@ public class GradleProcess extends PlatformObject implements IProcess, IProgress
 	private GradleStreamsProxy fProxy;
 	private String fLabel = null;
 	private ILaunch fLaunch = null;
+	
+	@SuppressWarnings("unchecked")
 	private Map fAttributes = null;
 	private boolean fTerminated = false;
 	private boolean fCancelled = false;
 	private IConsole fConsole = null;
 	
+	@SuppressWarnings("unchecked")
 	public GradleProcess(String label, ILaunch launch, Map attributes) {
 		fLabel = label;
 		fLaunch = launch;
+		fAttributes = attributes;
 		fProxy= new GradleStreamsProxy();
 		launch.addProcess(this);
 	}
@@ -44,6 +48,7 @@ public class GradleProcess extends PlatformObject implements IProcess, IProgress
 	/**
 	 * @see org.eclipse.debug.core.model.IProcess#setAttribute(java.lang.String, java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	public void setAttribute(String key, String value) {
 		fAttributes.put(key, value);
 	}

@@ -3,15 +3,15 @@
    <description name="Gradle Eclipse Plugins" url="http://www.breskeby.com/downloads/gradle/eclipse/update">
       Update Site for the Gradle Plugin
    </description>
-   <feature url="features/com.breskeby.eclipse.gradle.feature_0.1.0.200910042311.jar" id="com.breskeby.eclipse.gradle.feature" version="0.1.0.200910042311">
-      <category name="GradleSupport"/>
+   <feature url="features/com.breskeby.eclipse.gradle.feature_0.1.0.200910122034.jar" id="com.breskeby.eclipse.gradle.feature" version="0.1.0.200910122034">
+      <category name="Gradle Support"/>
    </feature>
-   <feature url="features/org.codehaus.gradle.feature_0.8.0.200910042311.jar" id="org.codehaus.gradle.feature" version="0.8.0.200910042311">
-      <category name="GradleSupport"/>
+   <feature url="features/org.codehaus.gradle.feature_0.8.0.jar" id="org.codehaus.gradle.feature" version="0.8.0">
+      <category name="Gradle Support"/>
    </feature>
-   <category-def name="GradleSupport" label="GradleSupport">
+   <category-def name="Gradle Support" label="Gradle Plugin">
       <description>
-         Eclipse Plugin to run and manage Gradle Builds in your favourite IDE
+         Eclipse Plugin to run and manage Gradle Builds in your favourite IDE.
       </description>
    </category-def>
 </site>

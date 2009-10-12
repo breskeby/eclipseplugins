@@ -13,6 +13,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
+@SuppressWarnings("restriction")
 public class GradleTabGroup extends AbstractLaunchConfigurationTabGroup {
     
 	/* (non-Javadoc)

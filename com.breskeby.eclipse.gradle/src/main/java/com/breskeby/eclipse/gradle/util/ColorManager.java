@@ -26,6 +26,9 @@ public class ColorManager implements ISharedTextColors {
 	
 	private static ColorManager fgColorManager;
 	
+	@SuppressWarnings("unchecked")
+	protected Map fColorTable= new HashMap(10);
+
 	private ColorManager() {
 	}
 	
@@ -36,8 +39,8 @@ public class ColorManager implements ISharedTextColors {
 		return fgColorManager;
 	}
 	
-	protected Map fColorTable= new HashMap(10);
 	
+	@SuppressWarnings("unchecked")
 	public Color getColor(RGB rgb) {
 		Color color= (Color) fColorTable.get(rgb);
 		if (color == null) {
@@ -47,6 +50,7 @@ public class ColorManager implements ISharedTextColors {
 		return color;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void dispose() {
 		Iterator e= fColorTable.values().iterator();
 		while (e.hasNext()) {

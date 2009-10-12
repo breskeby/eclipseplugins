@@ -1,14 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *     John-Mason P. Shackelford - bug 34548
- *******************************************************************************/
 package com.breskeby.eclipse.gradle.launchConfigurations;
 
 import java.util.ArrayList;
@@ -58,6 +47,7 @@ import com.ibm.icu.text.MessageFormat;
  * This class provides the Run/Debug As -> Gradle Build launch shortcut.
  * 
  */
+@SuppressWarnings("restriction")
 public class GradleLaunchShortcut implements ILaunchShortcut2 {
 
 	private boolean fShowDialog= false;
@@ -98,11 +88,12 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 	 * @param filePath the path to the build file to launch
 	 * @param project the project for the path
 	 * @param mode the mode in which the build file should be executed
-	 * @param targetAttribute the targets to launch or <code>null</code> to use targets on existing configuration,
-	 *  or <code>DEFAULT</code> for default target explicitly.
+	 * @param targetAttribute the tasks to launch or <code>null</code> to use tasks on existing configuration,
+	 *  or <code>DEFAULT</code> for default tasks explicitly.
 	 *  
 	 * configuration targets attribute.
 	 */
+	@SuppressWarnings("unchecked")
 	public void launch(IPath filePath, IProject project, String mode, String targetAttribute) {
 		ILaunchConfiguration configuration = null;
 		IFile backingfile = null;
@@ -147,7 +138,7 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 
 	
 	/**
-	 * Inform the user that an ant file was not found to run.
+	 * Inform the user that a gradle file was not found to run.
 	 */
 	private void gradleFileNotFound() {
 		reportError(GradleLaunchConfigurationMessages.GradleLaunchShortcut_Unable, null);	
@@ -161,10 +152,10 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 	 *   &quot; [targetList]&quot; appended to the end.
 	 * @param filePath the path to the buildfile
      * @param projectName the name of the project containing the buildfile or <code>null</code> if no project is known
-	 * @param targetAttribute the listing of targets to execute or <code>null</code> for default target execution
+	 * @param taskAttribute the listing of task to execute or <code>null</code> for default task execution
 	 * @return a unique name for the copy
 	 */
-	public static String getNewLaunchConfigurationName(IPath filePath, String projectName, String targetAttribute) {
+	public static String getNewLaunchConfigurationName(IPath filePath, String projectName, String taskAttribute) {
 		StringBuffer buffer = new StringBuffer();
 		if (projectName != null) {
 			buffer.append(projectName);
@@ -174,15 +165,15 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 			buffer.append(filePath.lastSegment());
 		}
 		
-		if (targetAttribute != null) {
+		if (taskAttribute != null) {
 			buffer.append(" ["); //$NON-NLS-1$
-			if (targetAttribute.length() > MAX_TARGET_APPEND_LENGTH + 3) {
+			if (taskAttribute.length() > MAX_TARGET_APPEND_LENGTH + 3) {
 				// The target attribute can potentially be a long, comma-separated list
 				// of target. Make sure the generated name isn't extremely long.
-				buffer.append(targetAttribute.substring(0, MAX_TARGET_APPEND_LENGTH));
+				buffer.append(taskAttribute.substring(0, MAX_TARGET_APPEND_LENGTH));
 				buffer.append("..."); //$NON-NLS-1$
 			} else {
-				buffer.append(targetAttribute);
+				buffer.append(taskAttribute);
 			}
 			buffer.append(']');
 		}
@@ -198,6 +189,7 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 	 * @param mode the mode to launch in
 	 * @param configuration the <code>ILaunchConfiguration</code> to launch
 	 */
+	@SuppressWarnings("deprecation")
 	private void launch(String mode, ILaunchConfiguration configuration) {
         if (fShowDialog) {
 			// Offer to save dirty editors before opening the dialog as the contents
@@ -205,6 +197,7 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 			if (!DebugUITools.saveBeforeLaunch()) {
 				return;
 			}
+			@SuppressWarnings("unused")
 			IStatus status = new Status(IStatus.INFO, GradlePlugin.PLUGIN_ID,IGradleConstants.STATUS_INIT_RUN_GRADLE, "BLUBB", null); //$NON-NLS-1$
 			String groupId;
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
@@ -247,7 +240,7 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 	}
 	
 	/**
-	 * Returns an array of build file names from the ant preference store
+	 * Returns an array of build file names from the gradle preference store
 	 * @return an array of build file names
 	 */
 	private String[] getBuildFileNames() {
@@ -320,6 +313,7 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 	 * @param file the buildfile resource
 	 * @return list of launch configurations
 	 */
+	@SuppressWarnings("unchecked")
 	public static List findExistingLaunchConfigurations(IFile file) {
 		List validConfigs = new ArrayList();
 		if(file != null) {
@@ -464,13 +458,14 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 	 * 
 	 * @since 3.4
 	 */
+	@SuppressWarnings("unchecked")
 	protected List collectConfigurations(IPath filepath) {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfigurationType type = manager.getLaunchConfigurationType(IGradleLaunchConfigurationConstants.ID_GRADLE_LAUNCH_CONFIGURATION_TYPE);
 		if(type != null) {
 			try {
 				ILaunchConfiguration[] configs = manager.getLaunchConfigurations(type);
-				ArrayList list = new ArrayList();
+				List list = new ArrayList();
 				IPath location = null;
 				for(int i = 0; i < configs.length; i++) {
 					if(configs[i].exists()) {

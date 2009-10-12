@@ -4,6 +4,9 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchesListener;
 
+/**
+ * @author breskeby
+ */
 public class GradleBuildListener implements ILaunchesListener {
 
 	private ILaunch fLaunch;
@@ -15,18 +18,9 @@ public class GradleBuildListener implements ILaunchesListener {
     }
 
 	public void launchesAdded(ILaunch[] launches) {
-		// TODO Auto-generated method stub
-		System.out.println("launch added: ");
-		for(ILaunch launch : launches){
-					System.out.println(launch);
-		}
 	}
 
 	public void launchesChanged(ILaunch[] launches) {
-			System.out.println("launch changed: ");
-			for(ILaunch launch : launches){
-						System.out.println(launch);
-			}
 	}
 
 	/* (non-Javadoc)
@@ -36,10 +30,8 @@ public class GradleBuildListener implements ILaunchesListener {
 	    for (int i = 0; i < launches.length; i++) {
 	        ILaunch launch = launches[i];
 	        if (launch.equals(fLaunch)) {
-//	            shutDown();
 	            return;
 	        }
 	    }
 	}
- 
 }
