@@ -46,6 +46,14 @@ public class GradleLaunchConfigurationMessages extends NLS {
 
 	public static String GradleLaunchShortcut_Exception_launching;
 
+	public static String GradleTasksTab_Check_task_to_e_xecute__1;
+
+	public static String GradleTasksTab_Name_5;
+
+	public static String GradleTasksTab_Description_6;
+
+	public static String GradleTasksTab_1;
+	
 	static {
 		// load message values from bundle file
 		NLS.initializeMessages(BUNDLE_NAME, GradleLaunchConfigurationMessages.class);

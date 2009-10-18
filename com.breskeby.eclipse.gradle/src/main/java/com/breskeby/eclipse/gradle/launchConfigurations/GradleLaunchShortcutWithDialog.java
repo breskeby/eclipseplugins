@@ -8,6 +8,7 @@ public class GradleLaunchShortcutWithDialog extends GradleLaunchShortcut {
 	 */
 	public GradleLaunchShortcutWithDialog() {
 		super();
+		
 		setShowDialog(true);
 	}
 }

@@ -23,6 +23,8 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Import-Package: com.ibm.icu.text;version="4.0.1",
  org.apache.tools.ant.util,
- org.codehaus.groovy.eclipse.editor;resolution:=optional
+ org.codehaus.groovy.eclipse.editor,
+ org.eclipse.jdt.internal.ui.javaeditor,
+ org.eclipse.ui.part
 Bundle-Localization: plugin
 Export-Package: com.breskeby.eclipse.gradle

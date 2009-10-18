@@ -22,6 +22,7 @@ public class GradleTabGroup extends AbstractLaunchConfigurationTabGroup {
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 			new GradleMainTab(),
+			new GradleTasksTab(),
 			new CommonTab()
 		};
 		setTabs(tabs);
@@ -29,6 +30,8 @@ public class GradleTabGroup extends AbstractLaunchConfigurationTabGroup {
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTabGroup#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
+	 * 
+	 * called when new execution configuration is created
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 		//set default name for script
@@ -46,10 +49,14 @@ public class GradleTabGroup extends AbstractLaunchConfigurationTabGroup {
 				configuration.rename(name);
 				//set the project name so that the correct default VM install can be determined
 				configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
-				configuration.setAttribute(IExternalToolConstants.ATTR_LOCATION,
-						VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", file.getFullPath().toString())); //$NON-NLS-1$
+				
+				String buildlocation = VariablesPlugin.getDefault().getStringVariableManager()
+													  .generateVariableExpression("workspace_loc", file.getFullPath().toString());//$NON-NLS-1$
+				configuration.setAttribute(IExternalToolConstants.ATTR_LOCATION, buildlocation); 
+			
 			}		
 		}
+		
 		super.setDefaults(configuration);
-	}	
+	}
 }

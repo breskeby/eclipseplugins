@@ -28,7 +28,9 @@ public class GradleRunner {
 	}
 	
 	public void run(IProgressMonitor monitor) throws CoreException{
+		monitor.beginTask("Invoking Gradle", 100);
 //		Long start = System.currentTimeMillis();
+		monitor.worked(5);
 		GradlePluginLord gradlePluginLord = new GradlePluginLord();
 //		gradlePluginLord.setLogLevel(org.gradle.api.logging.LogLevel.DEBUG);
 		gradlePluginLord.setGradleHomeDirectory(new File(GradlePlugin.getPlugin().getDefaultGradleHome()));
@@ -37,11 +39,13 @@ public class GradleRunner {
 		
 		File buildPath = new File(VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(buildfilePath)).getParentFile();
 		gradlePluginLord.setCurrentDirectory(buildPath);
-		ExecuteGradleCommandServerProtocol.ExecutionInteraction executionlistener = new DefaultExecutionInteraction(monitor, getProcess());
+		ExecuteGradleCommandServerProtocol.ExecutionInteraction executionlistener = new GradleBuildExecutionInteraction(monitor, getProcess());
 		
 		gradlePluginLord.startExecutionQueue();
 //		Long end = System.currentTimeMillis();
 		gradlePluginLord.addExecutionRequestToQueue(commandLine, executionlistener);
+		
+		
 	}
 
 	private GradleProcess getProcess() {

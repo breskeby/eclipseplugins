@@ -13,5 +13,13 @@ public class IGradleConstants {
 	  * the launch dialog is opened by the 'Run Ant' action.
 	  */
 	public static final int STATUS_INIT_RUN_GRADLE = 1000;
+	
+	public static final String IMG_TAB_GRADLE_TASKS = PLUGIN_ID +".IMG_TAB_GRADLE_TASKS" ;
+	
+	public static final String IMG_GRADLE_TASK = PLUGIN_ID +".IMG_GRADLE_TASK" ;
+	
+	public static final String IMG_GRADLE_DEFAULT_TASK = PLUGIN_ID +".IMG_GRADLE_DEFAULT_TASK";
+
+	public static final String GRADLE_TASKS_ATTRIBUTES = PLUGIN_ID +".GRADLE_TASKS_ATTRIBUTES";
 
 }

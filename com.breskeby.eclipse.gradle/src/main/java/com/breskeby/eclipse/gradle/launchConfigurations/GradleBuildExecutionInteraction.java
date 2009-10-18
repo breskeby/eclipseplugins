@@ -12,13 +12,13 @@ import org.gradle.foundation.ipc.gradle.ExecuteGradleCommandServerProtocol;
  * Default - Implementation of the ExecuteGradleCommandServerProtocol.ExecutionInteraction Interface,
  * this class managed the interaction between the created gradle process and the eclipse IDE.
  * */
-public class DefaultExecutionInteraction implements ExecuteGradleCommandServerProtocol.ExecutionInteraction{
+public class GradleBuildExecutionInteraction implements ExecuteGradleCommandServerProtocol.ExecutionInteraction{
 
 	private final IProgressMonitor monitor;
 	private GradleProcess process = null;
 
 	
-	public DefaultExecutionInteraction(IProgressMonitor monitor, GradleProcess gradleProcess) {
+	public GradleBuildExecutionInteraction(IProgressMonitor monitor, GradleProcess gradleProcess) {
 		this.monitor = monitor;
 		this.process = gradleProcess;
 	}

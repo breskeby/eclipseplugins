@@ -15,6 +15,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
 import com.breskeby.eclipse.gradle.GradlePlugin;
+import com.breskeby.eclipse.gradle.IGradleConstants;
 import com.breskeby.eclipse.gradle.preferences.IGradlePreferenceConstants;
 import com.ibm.icu.text.MessageFormat;
 
@@ -25,14 +26,13 @@ import com.ibm.icu.text.MessageFormat;
 @SuppressWarnings("restriction")
 public class GradleLaunchDelegate extends LaunchConfigurationDelegate  {
 
-	@SuppressWarnings("restriction")
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		
 		if (monitor.isCanceled()) {
 			return;
 		}
 		
-		if (CommonTab.isLaunchInBackground(configuration)) {
+		if (!CommonTab.isLaunchInBackground(configuration)) {
 			monitor.beginTask(MessageFormat.format(GradleLaunchConfigurationMessages.GradleLaunchDelegate_Launching__0__1, new String[] {configuration.getName()}), 10);
 		} else {
 			monitor.beginTask(MessageFormat.format(GradleLaunchConfigurationMessages.GradleLaunchDelegate_Running__0__2, new String[] {configuration.getName()}), 100);
@@ -42,10 +42,12 @@ public class GradleLaunchDelegate extends LaunchConfigurationDelegate  {
 		}
 
 		//get Argument String
-		String cmdLine = configuration.getAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, "");
+		StringBuffer cmdLine = new StringBuffer(configuration.getAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, ""));
+		
+		cmdLine.append(" ").append(configuration.getAttribute(IGradleConstants.GRADLE_TASKS_ATTRIBUTES, ""));
 		monitor.worked(1);
 		runGradleBuild(configuration, launch, monitor, "idStamp" + System.currentTimeMillis(), cmdLine);
-		monitor.worked(60);
+		monitor.worked(1);
 		if (monitor.isCanceled()) {
 			return;
 		}
@@ -53,11 +55,11 @@ public class GradleLaunchDelegate extends LaunchConfigurationDelegate  {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void runGradleBuild(ILaunchConfiguration configuration, ILaunch launch, IProgressMonitor monitor, String idStamp, String commandLine) throws CoreException {
+	private void runGradleBuild(ILaunchConfiguration configuration, ILaunch launch, IProgressMonitor monitor, String idStamp, StringBuffer cmdLine) throws CoreException {
 		Map attributes= new HashMap(2);
 		final GradleProcess process = new GradleProcess("GradleProcess", launch, attributes);
 		
-		GradleRunner runner = new GradleRunner(configuration, launch, commandLine);
+		GradleRunner runner = new GradleRunner(configuration, launch, cmdLine.toString());
 		try {
 			runner.run(monitor);
 		} catch (CoreException e) {

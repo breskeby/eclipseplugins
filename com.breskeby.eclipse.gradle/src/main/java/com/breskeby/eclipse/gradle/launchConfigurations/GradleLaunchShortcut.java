@@ -82,7 +82,7 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 	}
 	
 	/**
-	 * Launch the given targets in the given build file. The targets are
+	 * Launch the given targets in the given build file. The tasks are
 	 * launched in the given mode.
 	 * 
 	 * @param filePath the path to the build file to launch
@@ -192,6 +192,7 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 	@SuppressWarnings("deprecation")
 	private void launch(String mode, ILaunchConfiguration configuration) {
         if (fShowDialog) {
+        	
 			// Offer to save dirty editors before opening the dialog as the contents
 			// of an Ant editor often affect the contents of the dialog.
 			if (!DebugUITools.saveBeforeLaunch()) {

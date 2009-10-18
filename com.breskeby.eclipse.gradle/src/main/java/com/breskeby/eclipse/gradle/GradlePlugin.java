@@ -290,4 +290,8 @@ public class GradlePlugin extends AbstractUIPlugin {
 	public static Color getPreferenceColor(String pref) {
 		return ColorManager.getDefault().getColor(PreferenceConverter.getColor(getDefault().getPreferenceStore(), pref));
 	}	
+	
+//	public GradleExecScheduler getExecScheduler(){
+//		GradleExecScheduler scheduler = GradleExecScheduler.getInstance();
+//	}
 }
