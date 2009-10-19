@@ -1,6 +1,5 @@
 package com.breskeby.eclipse.gradle.launchConfigurations;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +16,8 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -46,7 +47,7 @@ import com.breskeby.eclipse.gradle.model.GradleTaskModelContentProvider;
 import com.breskeby.eclipse.gradle.model.GradleTaskModelLabelProvider;
 import com.breskeby.eclipse.gradle.util.GradleUtil;
 
-public class GradleTasksTab extends AbstractLaunchConfigurationTab {
+public class GradleTasksTab extends AbstractLaunchConfigurationTab implements IPropertyChangeListener {
 
 	private CheckboxTableViewer fTableViewer = null;
 	private List<TaskView> fAllTasks;
@@ -60,6 +61,7 @@ public class GradleTasksTab extends AbstractLaunchConfigurationTab {
 	private List<TaskView> selectedTasks = new ArrayList<TaskView>();
 	
 	public void createControl(Composite parent) {
+		
 		Font font = parent.getFont();
 		
 		Composite comp = new Composite(parent, SWT.NONE);
@@ -248,7 +250,7 @@ public class GradleTasksTab extends AbstractLaunchConfigurationTab {
 						try {
 							String variableString = fLaunchConfiguration.getAttribute(IExternalToolConstants.ATTR_LOCATION, "");
 							String absFileLocation = VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(variableString);
-							allProjects = GradleExecScheduler.getInstance().getProjectViews(new File(absFileLocation).getParentFile().getAbsolutePath());
+							allProjects = GradleExecScheduler.getInstance().getProjectViews(absFileLocation);
 						} catch (CoreException ce) {
 							exceptions[0]= ce;
 						}
@@ -353,5 +355,10 @@ public class GradleTasksTab extends AbstractLaunchConfigurationTab {
 		for(TaskView defTask : defaultTasks){
 			fTableViewer.setChecked(defTask, true);
 		}
+	}
+
+	
+	public void propertyChange(PropertyChangeEvent event) {
+		
 	}
 }

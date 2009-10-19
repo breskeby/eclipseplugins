@@ -27,7 +27,6 @@ import com.ibm.icu.text.MessageFormat;
 public class GradleLaunchDelegate extends LaunchConfigurationDelegate  {
 
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		
 		if (monitor.isCanceled()) {
 			return;
 		}

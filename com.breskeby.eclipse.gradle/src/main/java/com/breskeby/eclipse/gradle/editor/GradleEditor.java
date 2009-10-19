@@ -1,5 +1,7 @@
 package com.breskeby.eclipse.gradle.editor;
 
+import java.io.File;
+
 import org.codehaus.groovy.eclipse.editor.GroovyEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -21,7 +23,8 @@ public class GradleEditor extends GroovyEditor{
 			//update the task view of the gradle build file
 			GradleExecScheduler gradleScheduler = GradleExecScheduler.getInstance();		
 			IFile buildFile = getGradleBuildfileResource();
-			gradleScheduler.refreshTaskView(buildFile);			
+			String absolutePath = new File(buildFile.getLocationURI()).getPath();
+			gradleScheduler.refreshTaskView(absolutePath, false);			
 //		}
 	}
 	

@@ -7,15 +7,21 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.variables.VariablesPlugin;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.gradle.foundation.ProjectView;
-import org.gradle.foundation.ipc.gradle.ExecuteGradleCommandServerProtocol;
 import org.gradle.gradleplugin.foundation.GradlePluginLord;
 import org.gradle.gradleplugin.foundation.GradlePluginLord.GeneralPluginObserver;
-import org.gradle.gradleplugin.foundation.request.RefreshTaskListRequest;
 
-import com.breskeby.eclipse.gradle.launchConfigurations.GradleRefreshRequestExecutionInteraction;
+import com.breskeby.eclipse.gradle.jobs.GradleBuildExecutionInteraction;
+import com.breskeby.eclipse.gradle.jobs.GradleProcessExecListener;
+import com.breskeby.eclipse.gradle.jobs.GradleRefreshRequestExecutionInteraction;
+import com.breskeby.eclipse.gradle.launchConfigurations.GradleProcess;
 
 public class GradleExecScheduler {
 
@@ -34,43 +40,113 @@ public class GradleExecScheduler {
 	
 	private GradleExecScheduler(){
 	}
-
-	public void refreshTaskView(final IFile buildFile) {
-		System.out.println("start refreshTaskView");
+	
+	private IStatus runGradleProcess(final String absolutePath, IProgressMonitor monitor){
 		final GradlePluginLord gradlePluginLord = new GradlePluginLord();
 		gradlePluginLord.setGradleHomeDirectory(new File(GradlePlugin.getPlugin().getDefaultGradleHome()));
-		final File absoluteDirectory = new File(buildFile.getLocationURI()).getParentFile();
+		final File absoluteDirectory = new File(absolutePath).getParentFile();
 		
-		System.out.println("workdir " + absoluteDirectory.toString());
 		gradlePluginLord.setCurrentDirectory(absoluteDirectory);
-		ExecuteGradleCommandServerProtocol.ExecutionInteraction executionlistener = new GradleRefreshRequestExecutionInteraction();
+		GradleProcessExecListener executionlistener = new GradleRefreshRequestExecutionInteraction(monitor);
 		
-		gradlePluginLord.addGeneralPluginObserver(new GeneralPluginObserver() {
-			
-			public void startingProjectsAndTasksReload() {
-			}
-			
-			public void projectsAndTasksReloaded(boolean arg0) {
-				List<ProjectView> projects = gradlePluginLord.getProjects();
-				if(!projects.isEmpty()){
-					System.out.println("projectsAndTasksReloaded: " + projects.get(0).getName());
-				}
-				final String generateVariableExpression = 
-					VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", buildFile.toString()); //$NON-NLS-1$
-				
-				GradleExecScheduler.this.buildFileInformationCache.put(absoluteDirectory.toString(), projects);
-			}
-		}, true);
-		
+//		gradlePluginLord.addGeneralPluginObserver(new GeneralPluginObserver() {
+//			
+//			public void startingProjectsAndTasksReload() {
+////				GeneralPluginObserver.this.
+//			}
+//			
+//			public void projectsAndTasksReloaded(boolean arg0) {
+//				
+//			}
+//		}, true);
 		gradlePluginLord.startExecutionQueue();
-		RefreshTaskListRequest refreshTaskListRequest = (RefreshTaskListRequest) gradlePluginLord.addRefreshRequestToQueue(executionlistener);
+		gradlePluginLord.addRefreshRequestToQueue(executionlistener);
+		
+		//keep job open til listener reports gradle has finished
+		while(!executionlistener.isFinished()){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				return new Status(IStatus.WARNING, GradlePlugin.PLUGIN_ID, "Error while recalculating Gradle Tasks", e);
+			}
+		}
+		List<ProjectView> projects = gradlePluginLord.getProjects();
+		GradleExecScheduler.this.buildFileInformationCache.put(absolutePath, projects);
+		if(executionlistener.getThrowable()!=null){
+			return new Status(IStatus.WARNING, GradlePlugin.PLUGIN_ID, "Error while recalculating Gradle Tasks");
+		}
+		return Status.OK_STATUS;
+	}
+
+	public void refreshTaskView(final String absolutePath, boolean synched) {
+		
+		// create gradle job
+		if(!synched){
+			Job job = new Job("Calculating Gradle Tasks...") {
+				protected IStatus run(IProgressMonitor monitor) {		
+					return runGradleProcess(absolutePath, monitor);
+				}
+			};
+			job.setUser(false);
+			job.setPriority(Job.LONG);
+			job.schedule(); // start as soon as possible
+		}else{
+			runGradleProcess(absolutePath, null);
+		}
 	}
 	
-	public List<ProjectView> getProjectViews(String buildFile){
-//		if(buildFileInformationCache.get(buildFile)==null){
-//			refreshTaskView(buildFile);
-//		}
+	
+	public List<ProjectView> getProjectViews(IFile buildFile){
+		String absolutePath = new File(buildFile.getFullPath().toString()).getAbsolutePath();	
+		return getProjectViews(absolutePath);
+	}
+	
+	public List<ProjectView> getProjectViews(String absolutePath) {
+		if(buildFileInformationCache.get(absolutePath)==null){
+			refreshTaskView(absolutePath, true);
+		}
+		return buildFileInformationCache.get(absolutePath);
+	}
+
+	public void startGradleBuildRun(ILaunchConfiguration configuration, final String commandLine, final GradleProcess gradleProcess) throws CoreException{
+		final GradlePluginLord gradlePluginLord = new GradlePluginLord();
+
+		//TODO handle debug
+		//		gradlePluginLord.setLogLevel(org.gradle.api.logging.LogLevel.DEBUG);
+
 		
-		return buildFileInformationCache.get(buildFile);
+		gradlePluginLord.setGradleHomeDirectory(new File(GradlePlugin.getPlugin().getDefaultGradleHome()));
+		//get build file location
+		String buildfilePath = configuration.getAttribute(IExternalToolConstants.ATTR_LOCATION, "");
+		
+		File buildPath = new File(VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(buildfilePath)).getParentFile();
+		gradlePluginLord.setCurrentDirectory(buildPath);
+		
+		// create gradle job
+		Job job = new Job("Running Gradle Build...") {
+			protected IStatus run(IProgressMonitor monitor) {
+				
+				GradleProcessExecListener executionlistener = new GradleBuildExecutionInteraction(monitor, gradleProcess);
+				gradlePluginLord.startExecutionQueue();
+				
+				gradlePluginLord.addExecutionRequestToQueue(commandLine, executionlistener);
+				//keep job open til listener reports gradle has finished
+				while(!executionlistener.isFinished()){
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						return new Status(IStatus.WARNING, GradlePlugin.PLUGIN_ID, "Error while recalculating Gradle Tasks", e);
+					}
+				}
+				
+				if(executionlistener.getThrowable()!=null){
+					return new Status(IStatus.WARNING, GradlePlugin.PLUGIN_ID, "Error while recalculating Gradle Tasks", executionlistener.getThrowable());
+				}
+				return Status.OK_STATUS;
+			}
+		};
+		job.setUser(true);
+		job.setPriority(Job.LONG);
+		job.schedule(); // start as soon as possible
 	}
 }

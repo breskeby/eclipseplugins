@@ -4,6 +4,9 @@ import java.io.File;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -12,6 +15,7 @@ import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.gradle.foundation.ipc.gradle.ExecuteGradleCommandServerProtocol;
 import org.gradle.gradleplugin.foundation.GradlePluginLord;
 
+import com.breskeby.eclipse.gradle.GradleExecScheduler;
 import com.breskeby.eclipse.gradle.GradlePlugin;
 
 @SuppressWarnings("restriction")
@@ -31,21 +35,8 @@ public class GradleRunner {
 		monitor.beginTask("Invoking Gradle", 100);
 //		Long start = System.currentTimeMillis();
 		monitor.worked(5);
-		GradlePluginLord gradlePluginLord = new GradlePluginLord();
-//		gradlePluginLord.setLogLevel(org.gradle.api.logging.LogLevel.DEBUG);
-		gradlePluginLord.setGradleHomeDirectory(new File(GradlePlugin.getPlugin().getDefaultGradleHome()));
-		//get build file location
-		String buildfilePath = configuration.getAttribute(IExternalToolConstants.ATTR_LOCATION, "");
-		
-		File buildPath = new File(VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(buildfilePath)).getParentFile();
-		gradlePluginLord.setCurrentDirectory(buildPath);
-		ExecuteGradleCommandServerProtocol.ExecutionInteraction executionlistener = new GradleBuildExecutionInteraction(monitor, getProcess());
-		
-		gradlePluginLord.startExecutionQueue();
-//		Long end = System.currentTimeMillis();
-		gradlePluginLord.addExecutionRequestToQueue(commandLine, executionlistener);
-		
-		
+		GradleExecScheduler.getInstance().startGradleBuildRun(configuration, commandLine, getProcess());
+		monitor.done();
 	}
 
 	private GradleProcess getProcess() {

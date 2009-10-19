@@ -29,7 +29,6 @@ public class GradleStreamsProxy implements IStreamsProxy {
 	 * @see org.eclipse.debug.core.model.IStreamsProxy#getOutputStreamMonitor()
 	 */
 	public IStreamMonitor getOutputStreamMonitor() {
-		System.out.println("IStreamMonitor getoutput");
 		return fOutputMonitor;
 	}
 

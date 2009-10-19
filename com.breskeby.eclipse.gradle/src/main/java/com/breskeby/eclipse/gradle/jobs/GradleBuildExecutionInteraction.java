@@ -1,9 +1,11 @@
-package com.breskeby.eclipse.gradle.launchConfigurations;
+package com.breskeby.eclipse.gradle.jobs;
 
 import java.io.IOException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.gradle.foundation.ipc.gradle.ExecuteGradleCommandServerProtocol;
+
+import com.breskeby.eclipse.gradle.launchConfigurations.GradleProcess;
 
 
 /**
@@ -12,33 +14,27 @@ import org.gradle.foundation.ipc.gradle.ExecuteGradleCommandServerProtocol;
  * Default - Implementation of the ExecuteGradleCommandServerProtocol.ExecutionInteraction Interface,
  * this class managed the interaction between the created gradle process and the eclipse IDE.
  * */
-public class GradleBuildExecutionInteraction implements ExecuteGradleCommandServerProtocol.ExecutionInteraction{
-
-	private final IProgressMonitor monitor;
+public class GradleBuildExecutionInteraction extends GradleProcessExecListener{
 	private GradleProcess process = null;
-
 	
 	public GradleBuildExecutionInteraction(IProgressMonitor monitor, GradleProcess gradleProcess) {
-		this.monitor = monitor;
+		super(monitor);
 		this.process = gradleProcess;
 	}
 
 	
 	public void reportExecutionFinished(boolean arg0, String arg1,
 			Throwable arg2) {	
-		if(arg2!=null){
-			arg2.printStackTrace();
-		}
+		super.reportExecutionFinished(arg0, arg1, arg2);
 		process.terminated();
-		
-		monitor.done();
 	}
 
 	/**
 	 * @see ExecuteGradleCommandServerProtocol.ExecutionInteraction#reportExecutionStarted()
 	 * */
 	public void reportExecutionStarted() {
-		monitor.beginTask("Executing Gradle Build", 10);
+		beginTask("Executing Gradle Build", 100);
+		worked(10);
 	}
 
 	/**
@@ -58,12 +54,13 @@ public class GradleBuildExecutionInteraction implements ExecuteGradleCommandServ
 	 * @see ExecuteGradleCommandServerProtocol.ExecutionInteraction#reportTaskComplete(String, float)
 	 * */
 	public void reportTaskComplete(String arg0, float arg1) {
+		worked(10);
 	}
 
 	/**
 	 * @see ExecuteGradleCommandServerProtocol.ExecutionInteraction#reportTaskStarted(String, float)
 	 * */
 	public void reportTaskStarted(String arg0, float arg1) {
-		monitor.worked(10);
+		subTask("Running Task :" + arg0);
 	}
 };

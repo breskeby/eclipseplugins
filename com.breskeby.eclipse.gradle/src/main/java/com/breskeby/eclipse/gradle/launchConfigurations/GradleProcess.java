@@ -81,7 +81,7 @@ public class GradleProcess extends PlatformObject implements IProcess, IProgress
 		return fTerminated;
 	}
 	
-	protected void terminated() {
+	public void terminated() {
 		if (!fTerminated) {
 			fTerminated = true;
 			if (DebugPlugin.getDefault() != null) {
