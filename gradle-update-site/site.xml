@@ -3,7 +3,7 @@
    <description name="Gradle Eclipse Plugins" url="http://www.breskeby.com/downloads/gradle/eclipse/update">
       Update Site for the Gradle Plugin
    </description>
-   <feature url="features/com.breskeby.eclipse.gradle.feature_0.1.0.qualifier.jar" id="com.breskeby.eclipse.gradle.feature" version="0.1.0.qualifier">
+   <feature url="features/com.breskeby.eclipse.gradle.feature_0.1.0.200910192246.jar" id="com.breskeby.eclipse.gradle.feature" version="0.1.0.200910192246">
       <category name="Gradle Support"/>
    </feature>
    <feature url="features/org.codehaus.gradle.feature_0.8.0.jar" id="org.codehaus.gradle.feature" version="0.8.0">
