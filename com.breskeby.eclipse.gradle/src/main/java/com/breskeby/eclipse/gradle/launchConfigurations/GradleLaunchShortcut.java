@@ -37,7 +37,6 @@ import org.eclipse.ui.editors.text.ILocationProvider;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsUtil;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
-import com.breskeby.eclipse.gradle.GradleExecScheduler;
 import com.breskeby.eclipse.gradle.GradlePlugin;
 import com.breskeby.eclipse.gradle.IGradleConstants;
 import com.breskeby.eclipse.gradle.preferences.IGradlePreferenceConstants;
@@ -179,7 +178,7 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 			buffer.append(']');
 		}
 		
-		String name= DebugPlugin.getDefault().getLaunchManager().generateUniqueLaunchConfigurationNameFrom(buffer.toString());
+		String name= DebugPlugin.getDefault().getLaunchManager().generateLaunchConfigurationName(buffer.toString());
 		return name;
 	}
 	

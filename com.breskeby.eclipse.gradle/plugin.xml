@@ -58,28 +58,6 @@
 	<!--
    
    -->
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="com.breskeby.eclipse.gradle.contribution1"
-            objectClass="org.eclipse.core.resources.IFile">
-         <menu
-               label="Gradle"
-               path="additions"
-               id="com.breskeby.eclipse.gradle.menu1">
-            <separator
-                  name="group1">
-            </separator>
-         </menu>
-         <action
-               label="Run"
-               class="com.breskeby.eclipse.gradle.popup.actions.GradleRunAction"
-               menubarPath="com.breskeby.eclipse.gradle.menu1/group1"
-               enablesFor="1"
-               id="com.breskeby.eclipse.gradle.newAction">
-         </action>
-      </objectContribution>
-   </extension>
        
     
    <extension
