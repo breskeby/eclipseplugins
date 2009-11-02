@@ -16,7 +16,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.gradle.foundation.ProjectView;
 import org.gradle.gradleplugin.foundation.GradlePluginLord;
-import org.gradle.gradleplugin.foundation.GradlePluginLord.GeneralPluginObserver;
 
 import com.breskeby.eclipse.gradle.jobs.GradleBuildExecutionInteraction;
 import com.breskeby.eclipse.gradle.jobs.GradleProcessExecListener;

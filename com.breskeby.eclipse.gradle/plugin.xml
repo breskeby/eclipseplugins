@@ -16,7 +16,7 @@
 	<extension point="org.eclipse.debug.ui.consoleColorProviders">
       <consoleColorProvider
             class="com.breskeby.eclipse.gradle.ui.console.GradleConsoleColorProvider"
-            processType="org.breskeby.eclipse.gradle.gradleProcess"
+            processType="com.breskeby.eclipse.gradle.gradleProcess"
             id="com.breskeby.eclipse.gradle.ui.consoleColorProvider">
       </consoleColorProvider>
    </extension>
@@ -46,18 +46,7 @@
             id="com.breskeby.eclipse.gradle.preferences.GradleRuntimePreferencePage">
       </page>
    </extension>
-   <extension
-         id="gradleRunner"
-         point="org.eclipse.core.runtime.applications">
-     <application>
-         <run
-               class="com.breskeby.eclipse.gradle.GradleRunner">
-         </run>
-      </application>
-   </extension>
-	<!--
-   
-   -->
+
        
     
    <extension
@@ -69,7 +58,7 @@
             delegateName="%GradleLaunchDelegate.name"
             id="com.breskeby.eclipse.gradle.GradleLaunchConfigurationType"
             migrationDelegate="com.breskeby.eclipse.gradle.launchConfigurations.GradleMigrationDelegate"
-            modes="run"
+            modes="run, debug"
             name="%GradleBuild"
             sourceLocatorId="org.eclipse.ant.ui.debug.sourceLookupDirector"
             sourcePathComputerId="org.eclipse.ant.ui.debug.sourcePathComputer">

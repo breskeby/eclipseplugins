@@ -22,4 +22,6 @@ public class IGradleConstants {
 
 	public static final String GRADLE_TASKS_ATTRIBUTES = PLUGIN_ID +".GRADLE_TASKS_ATTRIBUTES";
 
+	public static final String ID_GRADLE_PROCESS_TYPE = "com.breskeby.eclipse.gradle.gradleProcess";
+
 }

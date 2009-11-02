@@ -1,22 +1,12 @@
 package com.breskeby.eclipse.gradle.launchConfigurations;
 
-import java.io.File;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
-import org.gradle.foundation.ipc.gradle.ExecuteGradleCommandServerProtocol;
-import org.gradle.gradleplugin.foundation.GradlePluginLord;
 
 import com.breskeby.eclipse.gradle.GradleExecScheduler;
-import com.breskeby.eclipse.gradle.GradlePlugin;
 
 @SuppressWarnings("restriction")
 public class GradleRunner {
