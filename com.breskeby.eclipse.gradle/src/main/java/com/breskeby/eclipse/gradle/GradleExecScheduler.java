@@ -16,6 +16,9 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.gradle.foundation.ProjectView;
 import org.gradle.gradleplugin.foundation.GradlePluginLord;
+import org.gradle.gradleplugin.foundation.request.ExecutionRequest;
+import org.gradle.gradleplugin.foundation.request.RefreshTaskListRequest;
+import org.gradle.gradleplugin.foundation.request.Request;
 
 import com.breskeby.eclipse.gradle.jobs.GradleBuildExecutionInteraction;
 import com.breskeby.eclipse.gradle.jobs.GradleProcessExecListener;
@@ -40,29 +43,38 @@ public class GradleExecScheduler {
 	private GradleExecScheduler(){
 	}
 	
-	private IStatus runGradleProcess(final String absolutePath, IProgressMonitor monitor){
+	private IStatus runGradleTaskRefreshProcess(final String absolutePath, IProgressMonitor monitor){
 		final GradlePluginLord gradlePluginLord = new GradlePluginLord();
 		gradlePluginLord.setGradleHomeDirectory(new File(GradlePlugin.getPlugin().getDefaultGradleHome()));
 		final File absoluteDirectory = new File(absolutePath).getParentFile();
 		
 		gradlePluginLord.setCurrentDirectory(absoluteDirectory);
-		GradleProcessExecListener executionlistener = new GradleRefreshRequestExecutionInteraction(monitor);
+		final GradleProcessExecListener executionlistener = new GradleRefreshRequestExecutionInteraction(monitor);
 		
-//		gradlePluginLord.addGeneralPluginObserver(new GeneralPluginObserver() {
-//			
-//			public void startingProjectsAndTasksReload() {
-////				GeneralPluginObserver.this.
-//			}
-//			
-//			public void projectsAndTasksReloaded(boolean arg0) {
-//				
-//			}
-//		}, true);
 		gradlePluginLord.startExecutionQueue();
-		gradlePluginLord.addRefreshRequestToQueue(executionlistener);
+		final BooleanHolder isComplete = new BooleanHolder();
+
+		GradlePluginLord.RequestObserver observer = new GradlePluginLord.RequestObserver() {
+	           
+			public void executionRequestAdded( ExecutionRequest request )
+	           {
+	              request.setExecutionInteraction( executionlistener );
+	           }
+	           public void refreshRequestAdded( RefreshTaskListRequest request ) { 
+	           }
+	           public void aboutToExecuteRequest( Request request ) { 
+	           }
+
+	           public void requestExecutionComplete( Request request, int result, String output ) {
+	        	   isComplete.value = true;
+	           }
+	        };
+
+	    gradlePluginLord.addRequestObserver(observer, false);
+		gradlePluginLord.addRefreshRequestToQueue();
 		
 		//keep job open til listener reports gradle has finished
-		while(!executionlistener.isFinished()){
+		while(!isComplete.value){
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -83,14 +95,14 @@ public class GradleExecScheduler {
 		if(!synched){
 			Job job = new Job("Calculating Gradle Tasks...") {
 				protected IStatus run(IProgressMonitor monitor) {		
-					return runGradleProcess(absolutePath, monitor);
+					return runGradleTaskRefreshProcess(absolutePath, monitor);
 				}
 			};
 			job.setUser(false);
 			job.setPriority(Job.LONG);
 			job.schedule(); // start as soon as possible
 		}else{
-			runGradleProcess(absolutePath, null);
+			runGradleTaskRefreshProcess(absolutePath, null);
 		}
 	}
 	
@@ -107,7 +119,7 @@ public class GradleExecScheduler {
 		return buildFileInformationCache.get(absolutePath);
 	}
 
-	public void startGradleBuildRun(ILaunchConfiguration configuration, final String commandLine, final GradleProcess gradleProcess) throws CoreException{
+	public void startGradleBuildRun(final ILaunchConfiguration configuration, final String commandLine, final GradleProcess gradleProcess) throws CoreException{
 		final GradlePluginLord gradlePluginLord = new GradlePluginLord();
 
 		//TODO handle debug
@@ -125,12 +137,38 @@ public class GradleExecScheduler {
 		Job job = new Job("Running Gradle Build...") {
 			protected IStatus run(IProgressMonitor monitor) {
 				
-				GradleProcessExecListener executionlistener = new GradleBuildExecutionInteraction(monitor, gradleProcess);
+				final GradleProcessExecListener executionlistener = new GradleBuildExecutionInteraction(monitor, gradleProcess);
 				gradlePluginLord.startExecutionQueue();
 				
-				gradlePluginLord.addExecutionRequestToQueue(commandLine, executionlistener);
+				final BooleanHolder isComplete = new BooleanHolder();
+				///
+				GradlePluginLord.RequestObserver observer = new GradlePluginLord.RequestObserver() {
+			           public void executionRequestAdded( ExecutionRequest request )
+			           {
+			              request.setExecutionInteraction( executionlistener );
+			           }
+			           public void refreshRequestAdded( RefreshTaskListRequest request ) { 
+			        	   
+			           }
+			           public void aboutToExecuteRequest( Request request ) { 
+			        	   
+			           }
+
+			           public void requestExecutionComplete( Request request, int result, String output ) {
+			        	   isComplete.value = true;
+			           }
+			        };
+
+				///########
+			    //add the observer before we add the request due to timing issues. 
+				//It's possible for it to completely execute before we return from addExecutionRequestToQueue.
+				    
+			    gradlePluginLord.addRequestObserver( observer, false );   
+			    Request request = gradlePluginLord.addExecutionRequestToQueue( commandLine, configuration.getName() );
+
+				//gradlePluginLord.addExecutionRequestToQueue(commandLine, executionlistener);
 				//keep job open til listener reports gradle has finished
-				while(!executionlistener.isFinished()){
+			    while(!isComplete.value){
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
@@ -148,4 +186,8 @@ public class GradleExecScheduler {
 		job.setPriority(Job.LONG);
 		job.schedule(); // start as soon as possible
 	}
+	
+	private class BooleanHolder {
+        private boolean value = false;
+    }
 }

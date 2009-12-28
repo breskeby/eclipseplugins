@@ -9,6 +9,7 @@ public abstract class GradleProcessExecListener implements
 	private IProgressMonitor monitor;
 	protected boolean finished = false;
 	protected Throwable throwable = null;
+	
 	public boolean isFinished() {
 		return finished;
 	}

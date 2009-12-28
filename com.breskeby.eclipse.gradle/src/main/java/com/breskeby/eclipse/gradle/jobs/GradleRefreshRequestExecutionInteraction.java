@@ -22,4 +22,9 @@ public class GradleRefreshRequestExecutionInteraction extends
 
 	public void reportTaskStarted(String arg0, float arg1) {
 	}
+
+	public void reportNumberOfTasksToExecute(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

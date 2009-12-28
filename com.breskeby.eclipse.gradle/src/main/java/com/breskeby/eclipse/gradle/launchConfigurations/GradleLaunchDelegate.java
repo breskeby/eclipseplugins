@@ -50,7 +50,6 @@ public class GradleLaunchDelegate extends LaunchConfigurationDelegate  {
 		//get Argument String
 		StringBuffer cmdLine = new StringBuffer(configuration.getAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, ""));
 		cmdLine.append(" ").append(configuration.getAttribute(IGradleConstants.GRADLE_TASKS_ATTRIBUTES, ""));
-		System.out.println("MODE " + mode);
 		//add debug flag if mode is DEBUG
 		if(mode.equals("debug")){
 			cmdLine.append(" ").append("-d");
