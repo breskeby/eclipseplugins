@@ -178,7 +178,8 @@ public class GradleLaunchShortcut implements ILaunchShortcut2 {
 			buffer.append(']');
 		}
 		
-		String name= DebugPlugin.getDefault().getLaunchManager().generateLaunchConfigurationName(buffer.toString());
+//		String name= DebugPlugin.getDefault().getLaunchManager().generateLaunchConfigurationName(buffer.toString());
+		String name = Long.toString(System.currentTimeMillis());
 		return name;
 	}
 	

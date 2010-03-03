@@ -2,6 +2,8 @@ package com.breskeby.eclipse.gradle.jobs;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.breskeby.eclipse.gradle.GradlePlugin;
+
 
 public class GradleRefreshRequestExecutionInteraction extends
 		GradleProcessExecListener {
@@ -23,8 +25,7 @@ public class GradleRefreshRequestExecutionInteraction extends
 	public void reportTaskStarted(String arg0, float arg1) {
 	}
 
-	public void reportNumberOfTasksToExecute(int arg0) {
-		// TODO Auto-generated method stub
-		
+	public void reportNumberOfTasksToExecute(int taskCount) {
+		GradlePlugin.log("reportNumberOfTasks: "+ taskCount, null);
 	}
 }

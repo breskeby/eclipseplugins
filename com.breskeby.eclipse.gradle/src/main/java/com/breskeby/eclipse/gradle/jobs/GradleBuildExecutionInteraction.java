@@ -66,7 +66,6 @@ public class GradleBuildExecutionInteraction extends GradleProcessExecListener{
 
 
 	public void reportNumberOfTasksToExecute(int arg0) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("running #tasks: " + arg0);
 	}
 };

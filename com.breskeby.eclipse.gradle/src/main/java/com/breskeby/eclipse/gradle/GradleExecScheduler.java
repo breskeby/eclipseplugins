@@ -44,8 +44,9 @@ public class GradleExecScheduler {
 	}
 	
 	private IStatus runGradleTaskRefreshProcess(final String absolutePath, IProgressMonitor monitor){
+//		System.currentTimeMillis()
 		final GradlePluginLord gradlePluginLord = new GradlePluginLord();
-		gradlePluginLord.setGradleHomeDirectory(new File(GradlePlugin.getPlugin().getDefaultGradleHome()));
+		gradlePluginLord.setGradleHomeDirectory(new File(GradlePlugin.getPlugin().getGradleHome()));
 		final File absoluteDirectory = new File(absolutePath).getParentFile();
 		
 		gradlePluginLord.setCurrentDirectory(absoluteDirectory);
@@ -126,7 +127,7 @@ public class GradleExecScheduler {
 		//		gradlePluginLord.setLogLevel(org.gradle.api.logging.LogLevel.DEBUG);
 
 		
-		gradlePluginLord.setGradleHomeDirectory(new File(GradlePlugin.getPlugin().getDefaultGradleHome()));
+		gradlePluginLord.setGradleHomeDirectory(new File(GradlePlugin.getPlugin().getGradleHome()));
 		//get build file location
 		String buildfilePath = configuration.getAttribute(IExternalToolConstants.ATTR_LOCATION, "");
 		
@@ -172,12 +173,12 @@ public class GradleExecScheduler {
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
-						return new Status(IStatus.WARNING, GradlePlugin.PLUGIN_ID, "Error while recalculating Gradle Tasks", e);
+						return new Status(IStatus.WARNING, GradlePlugin.PLUGIN_ID, "Error while running Gradle Tasks", e);
 					}
 				}
 				
 				if(executionlistener.getThrowable()!=null){
-					return new Status(IStatus.WARNING, GradlePlugin.PLUGIN_ID, "Error while recalculating Gradle Tasks", executionlistener.getThrowable());
+					return new Status(IStatus.WARNING, GradlePlugin.PLUGIN_ID, "Error while running Gradle Tasks", executionlistener.getThrowable());
 				}
 				return Status.OK_STATUS;
 			}

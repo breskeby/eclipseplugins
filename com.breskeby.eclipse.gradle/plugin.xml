@@ -3,7 +3,6 @@
 <plugin>
 	<extension point="org.eclipse.core.contenttype.contentTypes">
    		<content-type base-type="org.eclipse.core.runtime.xml"
-			file-names="build.gradle"
 			file-extensions="gradle"
             id="com.breskeby.eclipse.gradle.contenttype.buildfile"
             name="Gradle build file"
@@ -20,21 +19,6 @@
             id="com.breskeby.eclipse.gradle.ui.consoleColorProvider">
       </consoleColorProvider>
    </extension>
-	<extension point="org.eclipse.ui.editors">
-      <editor
-            class="com.breskeby.eclipse.gradle.editor.GradleEditor"
-            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            default="true"
-            extensions="gradle"
-            icon="icons/gradle_file.gif"
-            id="com.breskeby.eclipse.gradle.editor.GradleEditor"
-            name="Gradle Editor">
-         <contentTypeBinding
-               contentTypeId="org.codehaus.groovy.eclipse.groovySource">
-         </contentTypeBinding>
-      </editor>
-   </extension>
-   
    <extension point="org.eclipse.core.runtime.preferences">
 		<initializer class="com.breskeby.eclipse.gradle.preferences.GradlePreferenceInitializer"/>
 	</extension>
@@ -81,7 +65,6 @@
             category="org.eclipse.ui.externaltools"
             class="com.breskeby.eclipse.gradle.launchConfigurations.GradleLaunchShortcut"
             description="%GradleBuildShortcut.description"
-            helpContextId="org.eclipse.ui.externaltools.launchShortcutHelpContext.antShortcut"
             icon="icons/run_gradle_build.gif"
             id="com.breskeby.eclipse.gradle.ui.gradleShortcut"
             label="%GradleLaunchShortcut.label"
@@ -109,7 +92,6 @@
             category="org.eclipse.ui.externaltools"
             class="com.breskeby.eclipse.gradle.launchConfigurations.GradleLaunchShortcutWithDialog"
             description="%GradleBuild...Shortcut.description"
-            helpContextId="org.eclipse.ui.externaltools.launchShortcutHelpContext.antShortcut"
             icon="icons/run_gradle_build.gif"
             id="com.breskeby.eclipse.gradle.ui.gradleShortcutWithDialog"
             label="%GradleLaunchShortcutWithDialog.label"
@@ -147,4 +129,43 @@
        </adapter>
     </factory>
    </extension>
+   <extension point = "org.eclipse.ui.popupMenus">
+     <objectContribution
+           adaptable="false"
+           id="com.breskeby.eclipse.gradle.popup.actions.refreshClasspath"
+           objectClass="org.eclipse.core.resources.IProject">
+        <menu
+              id="com.breskeby.eclipse.gradle.menu1"
+              label="Gradle"
+              path="additions">
+           <separator
+                 name="group1">
+           </separator>
+        </menu>
+        <action
+              class="com.breskeby.eclipse.gradle.popup.actions.NewAction"
+              enablesFor="1"
+              id="com.breskeby.eclipse.gradle.newAction"
+              label="Refresh Classpath"
+              menubarPath="com.breskeby.eclipse.gradle.menu1/group1">
+        </action>
+     </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.breskeby.eclipse.gradle.editors.BasicGradleEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            extensions="gradle"
+            icon="icons/gradle_file.gif"
+            default="true"
+            id="com.breskeby.eclipse.gradle.editors.BasicGradleEditor"
+            name="Gradle Editor">
+            <contentTypeBinding
+               contentTypeId="org.codehaus.groovy.eclipse.groovySource">
+         </contentTypeBinding>
+      </editor>
+   </extension>
+   
+   
 </plugin>

@@ -1,15 +1,25 @@
 package com.breskeby.eclipse.gradle;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 
+import org.eclipse.core.internal.registry.ExtensionRegistry;
+import org.eclipse.core.runtime.ContributorFactoryOSGi;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IContributor;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -24,6 +34,7 @@ import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
+import com.breskeby.eclipse.gradle.preferences.IGradlePreferenceConstants;
 import com.breskeby.eclipse.gradle.util.ColorManager;
 
 /**
@@ -98,6 +109,7 @@ public class GradlePlugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		initializeGradleEditor();
 		plugin = this;
 	}
 
@@ -242,7 +254,21 @@ public class GradlePlugin extends AbstractUIPlugin {
 	/**
 	 * @return the absolute path to the defaultGradleHome directory
 	 * */
-	public String getDefaultGradleHome(){
+	public String getGradleHome(){
+		//is gradlehome configured?
+		String gradleHome = getPlugin().getPreferenceStore().getString(IGradlePreferenceConstants.MANUELL_GRADLE_HOME);
+		
+		if(gradleHome!=null && !gradleHome.trim().equals("")){
+			return gradleHome;
+		}else{
+			return getDefaultGradleHome();
+		}
+		
+	}
+	
+	
+	private String getDefaultGradleHome() {
+		//use default gradlehome 
 		String gradleHomeString = null;
 		ServiceTracker tracker = new ServiceTracker(GradlePlugin.getPlugin().getBundle().getBundleContext(), PackageAdmin.class.getName(), null);
 		tracker.open();
@@ -268,8 +294,7 @@ public class GradlePlugin extends AbstractUIPlugin {
 		makeGradleScriptsExecutable(gradleHomeString);
 		return gradleHomeString;
 	}
-	
-	
+
 	/**
 	 * this is necessary because root.permissions in feature build.properties doesn't work yet
 	 * */
@@ -291,7 +316,53 @@ public class GradlePlugin extends AbstractUIPlugin {
 		return ColorManager.getDefault().getColor(PreferenceConverter.getColor(getDefault().getPreferenceStore(), pref));
 	}	
 	
-//	public GradleExecScheduler getExecScheduler(){
-//		GradleExecScheduler scheduler = GradleExecScheduler.getInstance();
-//	}
+	// The gradle editor extension is added programmatically, to select the prefered editor depending.
+	// If greclipse plugin is available the groovy editor based gradle editor is choosen. 
+	// If greclipse plugin is not available, a plain text editor based gradle editor is choosen
+	private void initializeGradleEditor(){
+		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+		IExtension extension = extensionRegistry.getExtension("org.eclipse.ui.editors", "org.codehaus.groovy.eclipse.editor.GroovyEditor");
+		if(extension!=null){
+			addGradleEditor("com.breskeby.eclipse.gradle.editor.GroovyGradleEditor");
+		}else{
+			addGradleEditor("com.breskeby.eclipse.gradle.editor.GradleEditor");
+		}
+	}
+	
+	private void addGradleEditor(String className) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		sb.append("<plugin>");
+		sb.append("<extension point=\"org.eclipse.ui.editors\">");
+		sb.append("<editor class=\"").append(className).append("\"");
+		sb.append("contributorClass=\"org.eclipse.ui.texteditor.BasicTextEditorActionContributor\"");
+		sb.append("default=\"true\"");
+		sb.append("extensions=\"gradle\"");
+		sb.append("icon=\"icons/gradle_file.gif\"");
+		sb.append("id=\"com.breskeby.eclipse.gradle.editor.groovy.GradleEditor\"");
+		sb.append("name=\"Gradle Editor\">");
+		sb.append("<contentTypeBinding contentTypeId=\"org.codehaus.groovy.eclipse.groovySource\">");
+		sb.append("</contentTypeBinding>");
+		sb.append("</editor>");
+		sb.append("</extension>");
+		sb.append("</plugin>");
+		try {
+			addExtension(sb.toString());
+			
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void addExtension(String xmlsrc) throws UnsupportedEncodingException {
+		// use  Eclipse Dynamic Extension API
+		IExtensionRegistry reg = RegistryFactory.getRegistry();
+		Object key = ((ExtensionRegistry)reg).getTemporaryUserToken();
+		Bundle bundle = getBundle();
+		IContributor contributor = 
+	     ContributorFactoryOSGi.createContributor(bundle);
+		ByteArrayInputStream is = 
+	     new ByteArrayInputStream(xmlsrc.getBytes("UTF-8"));
+		reg.addContribution(is, contributor, false, null, null, key);
+	}
 }
